@@ -132,6 +132,14 @@ img { max-width: 100%; }
 /* readability layer: darker on the text side, lighter on the right */
 .hero-flag-bg::before { content: ""; position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(90deg, rgba(7,26,48,.82) 0%, rgba(7,26,48,.62) 45%, rgba(7,26,48,.30) 100%); }
+/* map badges under the hero map */
+.map-badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+.map-badges span { display: inline-flex; align-items: center; gap: .4rem; background: rgba(7,26,48,.6); border: 1px solid rgba(255,255,255,.18); color: #e2ecf7; padding: .35rem .8rem; border-radius: 999px; font-size: .8rem; backdrop-filter: blur(4px); }
+.map-badges i { color: #4ade80; }
+/* flag as the site logo */
+.mini-flag.flag-brand { width: 60px; height: 40px; border-radius: 4px; box-shadow: 0 0 0 2px rgba(255,255,255,.25), 0 4px 10px rgba(0,0,0,.35); }
+.flag-brand .mf-green span { font-size: 6px; }
+.flag-brand .mf-white svg { width: 11px; height: 11px; }
 /* small, complete flag in the hero badge */
 .mini-flag { display: inline-flex; flex-direction: column; width: 42px; height: 28px; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.35); flex-shrink: 0; }
 .mini-flag > span { flex: 1; display: flex; align-items: center; justify-content: center; }
@@ -143,12 +151,13 @@ img { max-width: 100%; }
 .hero-flag-bg .eyebrow { padding: .3rem .9rem .3rem .35rem; gap: .6rem; background: rgba(7,26,48,.55); }
 .hero-flag-bg .hero-inner { position: relative; }
 
-.hero-inner { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; }
+.hero-inner { display: grid; grid-template-columns: .9fr 1.25fr; gap: 2.5rem; align-items: center; }
 .eyebrow { display: inline-flex; align-items: center; gap: .45rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #d4e3f3; padding: .35rem .85rem; border-radius: 999px; font-size: .82rem; font-weight: 500; margin-bottom: 1.3rem; }
 .eyebrow i { color: #4ade80; }
 .hero h1 { font-size: clamp(2.2rem, 4.2vw, 3.5rem); font-weight: 800; letter-spacing: -.025em; margin-bottom: 1rem; }
 .hero h1 .hl { background: linear-gradient(90deg, #4ade80, #22c55e); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.hero .lead { font-size: 1.15rem; color: #bcd0e6; max-width: 34rem; margin: 0 0 2rem; }
+.hero h1 { font-size: clamp(2.1rem, 3.6vw, 3.1rem); }
+.hero .lead { font-size: 1.1rem; color: #bcd0e6; max-width: 34rem; margin: 0 0 2rem; }
 .search-bar { display: flex; align-items: center; max-width: 600px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
 .search-bar input { flex: 1; border: 0; padding: .95rem 1rem; font: inherit; color: var(--ink); min-width: 0; background: transparent; }
 .search-bar input:focus { outline: none; }
@@ -164,14 +173,14 @@ img { max-width: 100%; }
 .chip:hover { background: var(--green); border-color: var(--green); color: #fff; }
 
 .hero-visual { position: relative; }
-.map-frame { background: #fff; border-radius: 16px; padding: 0; box-shadow: var(--shadow-lg); overflow: hidden; border: 1px solid rgba(255,255,255,.2); transform: perspective(1400px) rotateY(-4deg); }
+.map-frame { background: #fff; border-radius: 16px; padding: 0; box-shadow: var(--shadow-lg); overflow: hidden; border: 1px solid rgba(255,255,255,.2); }
 .map-frame-bar { display: flex; align-items: center; gap: .4rem; padding: .6rem .9rem; background: #f1f5f9; border-bottom: 1px solid var(--line); }
 .map-frame-bar .dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; }
 .map-frame-bar .dot:nth-child(1) { background: #f87171; }
 .map-frame-bar .dot:nth-child(2) { background: #fbbf24; }
 .map-frame-bar .dot:nth-child(3) { background: #4ade80; }
 .map-frame-title { margin-left: .6rem; font-size: .8rem; color: var(--muted); font-weight: 500; }
-.hero-map { height: 360px; }
+.hero-map { height: 480px; }
 .city-label { background: rgba(13,40,71,.88); color: #fff; border: 0; border-radius: 6px; font-size: .74rem; font-weight: 600; padding: .15rem .45rem; box-shadow: none; }
 .city-label::before { display: none; }
 .floating-badge { position: absolute; z-index: 600; display: flex; align-items: center; gap: .65rem; background: #fff; color: var(--ink); padding: .7rem 1rem; border-radius: 12px; box-shadow: var(--shadow-lg); font-size: .82rem; }
@@ -445,6 +454,8 @@ textarea { resize: vertical; }
   .filters, .help-box { position: static; }
 }
 @media (max-width: 560px) {
+  .mini-flag.flag-brand { width: 45px; height: 30px; }
+  .hero-map { height: 340px; }
   .card-grid.four, .card-grid.three, .tiles, .two-col, .org-grid, .stats-strip { grid-template-columns: 1fr; }
   .theme-grid { grid-template-columns: 1fr 1fr; }
   .stat + .stat { border-left: 0; border-top: 1px solid var(--line); }

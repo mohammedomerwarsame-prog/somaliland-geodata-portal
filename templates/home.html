@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static humanize %}
 {% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap">{% endblock %}
+{% endblock %}
 
 {% block content %}
 <!-- ============ HERO ============ -->
@@ -14,11 +14,7 @@
   <div class="container hero-inner">
     <div class="hero-text">
       <span class="eyebrow">
-        <span class="mini-flag" role="img" aria-label="Flag of Somaliland">
-          <span class="mf-green"><span lang="ar" dir="rtl">لا إله إلا الله محمد رسول الله</span></span>
-          <span class="mf-white"><svg viewBox="-1 -1 2 2"><polygon fill="#000" points="0,-1 0.2245,-0.309 0.951,-0.309 0.3633,0.118 0.5878,0.809 0,0.382 -0.5878,0.809 -0.3633,0.118 -0.951,-0.309 -0.2245,-0.309"/></svg></span>
-          <span class="mf-red"></span>
-        </span>
+        {% include "_flag.html" %}
         Official national geospatial data platform
       </span>
       <h1>Reliable geographic data for <span class="hl">Somaliland</span></h1>
@@ -45,8 +41,11 @@
         </div>
         <div id="hero-map" class="hero-map" aria-label="Overview map of Somaliland"></div>
       </div>
-      <div class="floating-badge fb-1"><i class="bi bi-shield-check"></i><div><strong>Reviewed</strong><span>before publishing</span></div></div>
-      <div class="floating-badge fb-2"><i class="bi bi-unlock"></i><div><strong>Open data</strong><span>free to download</span></div></div>
+      <div class="map-badges">
+        <span><i class="bi bi-shield-check"></i> Reviewed before publishing</span>
+        <span><i class="bi bi-unlock"></i> Open data, free to download</span>
+        <span><i class="bi bi-bounding-box"></i> Regional boundaries</span>
+      </div>
     </div>
   </div>
 </section>
@@ -160,7 +159,7 @@
 <script>
   (function () {
     if (!window.L) return;
-    var map = L.map('hero-map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true })
+    var map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.25 })
       .setView([9.9, 45.6], 6);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 18, attribution: 'Tiles &copy; Esri'
@@ -178,7 +177,8 @@
         // thicker outer outline drawn on top
         L.geoJSON(data, { interactive: false, style: { color: '#138a43', weight: 3, fill: false, opacity: .85 } }).addTo(map);
         layer.bringToBack();
-        map.fitBounds(layer.getBounds(), { padding: [12, 12] });
+        map.fitBounds(layer.getBounds(), { padding: [6, 6] });
+        window.addEventListener('resize', function () { map.fitBounds(layer.getBounds(), { padding: [6, 6] }); });
       })
       .catch(function () {});
 
