@@ -171,7 +171,7 @@
 
     [['Hargeisa', 9.56, 44.065, true, 'bottom'], ['Berbera', 10.439, 45.014, false, 'right'],
      ['Borama', 9.936, 43.183, false, 'left'], ['Burao', 9.522, 45.534, false, 'right'],
-     ['Erigavo', 10.616, 47.369, false, 'right']]
+     ['Erigavo', 10.616, 47.369, false, 'right'], ['Las Anod', 8.477, 47.360, false, 'right']]
       .forEach(function (c) {
         L.circleMarker([c[1], c[2]], { radius: c[3] ? 8 : 6, color: '#fff', weight: 2.5, fillColor: c[3] ? '#c8102e' : '#1e8e3e', fillOpacity: 1 })
           .addTo(map).bindTooltip(c[0], { permanent: true, direction: c[4], offset: c[4] === 'bottom' ? [0, 6] : [0, 0], className: 'city-label' });
