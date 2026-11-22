@@ -119,6 +119,30 @@ img { max-width: 100%; }
     radial-gradient(800px 400px at 0% 100%, rgba(29, 100, 216, .25), transparent 60%),
     linear-gradient(160deg, var(--navy-900) 0%, var(--navy) 55%, #10345c 100%);
 }
+/* Flag background */
+.hero-flag-bg { background: var(--navy); isolation: isolate; }
+.hero-flag { position: absolute; inset: 0; z-index: -2; display: flex; flex-direction: column; }
+.hf-band { flex: 1; display: flex; align-items: center; justify-content: center; }
+.hf-green { background: #00853f; }
+.hf-white { background: #ffffff; }
+.hf-red { background: #d21034; }
+/* cloth shading so it reads as a flag */
+.hero-flag::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(100deg, rgba(0,0,0,0) 0%, rgba(255,255,255,.10) 18%, rgba(0,0,0,.10) 36%, rgba(255,255,255,.08) 55%, rgba(0,0,0,.10) 75%, rgba(255,255,255,.06) 92%); }
+/* readability layer: darker on the text side, lighter on the right */
+.hero-flag-bg::before { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, rgba(7,26,48,.82) 0%, rgba(7,26,48,.62) 45%, rgba(7,26,48,.30) 100%); }
+/* small, complete flag in the hero badge */
+.mini-flag { display: inline-flex; flex-direction: column; width: 42px; height: 28px; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.35); flex-shrink: 0; }
+.mini-flag > span { flex: 1; display: flex; align-items: center; justify-content: center; }
+.mf-green { background: #00853f; }
+.mf-green span { font-family: "Amiri", "Traditional Arabic", serif; font-weight: 700; color: #fff; font-size: 4.2px; line-height: 1; white-space: nowrap; }
+.mf-white { background: #fff; }
+.mf-white svg { width: 8px; height: 8px; }
+.mf-red { background: #d21034; }
+.hero-flag-bg .eyebrow { padding: .3rem .9rem .3rem .35rem; gap: .6rem; background: rgba(7,26,48,.55); }
+.hero-flag-bg .hero-inner { position: relative; }
+
 .hero-inner { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; }
 .eyebrow { display: inline-flex; align-items: center; gap: .45rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #d4e3f3; padding: .35rem .85rem; border-radius: 999px; font-size: .82rem; font-weight: 500; margin-bottom: 1.3rem; }
 .eyebrow i { color: #4ade80; }
@@ -406,6 +430,7 @@ textarea { resize: vertical; }
 }
 @media (max-width: 900px) {
   .hero { padding: 3rem 0 5.5rem; }
+  .hero-flag-bg::before { background: rgba(7,26,48,.74); }
   .hero-inner, .catalog-layout, .detail-layout, .form-layout, .two-up, .steps, .share-layout { grid-template-columns: 1fr; }
   .map-frame { transform: none; }
   .floating-badge { display: none; }
