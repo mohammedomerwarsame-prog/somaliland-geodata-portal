@@ -367,6 +367,30 @@ textarea { resize: vertical; }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding: 1rem 0; font-size: .83rem; }
 .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
+/* ---------- Share data page ---------- */
+.share-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; padding-bottom: 2rem; }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+.contact-card { position: relative; display: flex; align-items: center; gap: 1rem; padding: 1.3rem; border-radius: var(--radius); background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-sm); text-decoration: none; color: var(--ink); transition: transform .2s, box-shadow .2s, border-color .2s; }
+.contact-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.contact-card strong { display: block; font-family: var(--font-head); font-size: 1.05rem; }
+.contact-card span { display: block; font-weight: 600; color: var(--ink-2); word-break: break-all; }
+.contact-card small { color: var(--muted); }
+.cc-icon { width: 3.2rem; height: 3.2rem; border-radius: 14px; display: grid; place-items: center; font-size: 1.5rem; color: #fff; flex-shrink: 0; }
+.cc-telegram .cc-icon { background: linear-gradient(135deg, #37aee2, #1e96c8); }
+.cc-telegram:hover { border-color: #37aee2; }
+.cc-email .cc-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.cc-phone .cc-icon { background: linear-gradient(135deg, #22c55e, #138a43); }
+.cc-arrow { position: absolute; top: 1rem; right: 1rem; color: #94a3b8; }
+.send-list { padding-left: 1.2rem; color: var(--ink-2); }
+.send-list li { margin-bottom: .7rem; }
+.timeline { list-style: none; padding: 0; margin: .5rem 0 0; }
+.timeline li { display: flex; gap: .8rem; padding-bottom: 1rem; position: relative; }
+.timeline li:not(:last-child)::before { content: ""; position: absolute; left: .95rem; top: 2rem; bottom: 0; width: 2px; background: var(--line); }
+.timeline li > span { width: 2rem; height: 2rem; flex-shrink: 0; border-radius: 50%; background: var(--green-50); color: var(--green); font-weight: 700; display: grid; place-items: center; }
+.timeline strong { display: block; font-size: .95rem; }
+.timeline small { color: var(--muted); }
+.muted-panel { background: #f8fafc; }
+
 /* ---------- Leaflet tweaks ---------- */
 .leaflet-container { font-family: var(--font); }
 
@@ -381,7 +405,7 @@ textarea { resize: vertical; }
 }
 @media (max-width: 900px) {
   .hero { padding: 3rem 0 5.5rem; }
-  .hero-inner, .catalog-layout, .detail-layout, .form-layout, .two-up, .steps { grid-template-columns: 1fr; }
+  .hero-inner, .catalog-layout, .detail-layout, .form-layout, .two-up, .steps, .share-layout { grid-template-columns: 1fr; }
   .map-frame { transform: none; }
   .floating-badge { display: none; }
   .card-grid.three { grid-template-columns: repeat(2, 1fr); }

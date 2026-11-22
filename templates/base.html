@@ -74,7 +74,7 @@
         <img src="{% static 'images/emblem.svg' %}" alt="" class="brand-emblem" width="44" height="44">
         <span><span class="brand-name">{{ PORTAL_NAME }}</span><span class="brand-tagline">{{ PORTAL_TAGLINE }}</span></span>
       </a>
-      <p>The official platform for discovering and sharing geospatial data produced by government institutions.</p>
+      <p>The official platform for discovering and downloading geospatial data. Run by {{ PORTAL_ORGANIZATION }}.</p>
     </div>
     <div>
       <h4>Data</h4>
@@ -83,10 +83,10 @@
       <a href="{% url 'datasets:catalog' %}?sort=new">Latest datasets</a>
     </div>
     <div>
-      <h4>Contribute</h4>
-      <a href="{% url 'accounts:request_specialist' %}">Request upload access</a>
-      <a href="{% url 'datasets:upload' %}">Upload data</a>
-      <a href="{% url 'datasets:about' %}">Publishing standards</a>
+      <h4>Share data</h4>
+      <a href="{% url 'datasets:share' %}">Share your data</a>
+      <a href="{{ CONTRIBUTE_TELEGRAM_URL }}" target="_blank" rel="noopener"><i class="bi bi-telegram"></i> Telegram</a>
+      <a href="mailto:{{ CONTRIBUTE_EMAIL }}">{{ CONTRIBUTE_EMAIL }}</a>
     </div>
     <div>
       <h4>Portal</h4>

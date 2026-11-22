@@ -5,7 +5,7 @@
   <div class="container head-row">
     <div>
       <h1>My uploads</h1>
-      <p>{{ user.organization.name }} · {{ user.get_role_display }}</p>
+      <p>{{ PORTAL_ORGANIZATION }} · {{ user.get_role_display }}</p>
     </div>
     <a class="btn btn-green big" href="{% url 'datasets:upload' %}"><i class="bi bi-cloud-arrow-up"></i> Upload new dataset</a>
   </div>
@@ -36,11 +36,11 @@
     {% endif %}
   </div>
 
-  {% if org_uploads %}
+  {% if team_uploads %}
   <div class="panel">
-    <h2>Other uploads from {{ user.organization.short_name|default:user.organization.name }}</h2>
+    <h2>Recent uploads by the team</h2>
     <ul class="plain-list">
-      {% for d in org_uploads %}<li><a href="{{ d.get_absolute_url }}">{{ d.title }}</a> <span class="status status-{{ d.status }}">{{ d.get_status_display }}</span></li>{% endfor %}
+      {% for d in team_uploads %}<li><a href="{{ d.get_absolute_url }}">{{ d.title }}</a> <span class="muted small">· {{ d.organization.short_name|default:d.organization.name }} · by {{ d.uploaded_by }}</span> <span class="status status-{{ d.status }}">{{ d.get_status_display }}</span></li>{% endfor %}
     </ul>
   </div>
   {% endif %}

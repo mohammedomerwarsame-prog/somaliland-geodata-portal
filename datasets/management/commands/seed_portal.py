@@ -4,6 +4,7 @@ python manage.py seed_portal --demo    -> also demo users and one sample dataset
 """
 import json
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -41,17 +42,21 @@ class Command(BaseCommand):
             Category.objects.get_or_create(slug=slug, defaults={"name": name, "order": i})
         for name, short, kind in INSTITUTIONS:
             Organization.objects.get_or_create(name=name, defaults={"short_name": short, "kind": kind})
+        # The organization that runs the portal (its staff are the only uploaders)
+        Organization.objects.get_or_create(
+            name=settings.PORTAL_ORGANIZATION, defaults={"short_name": "Team", "kind": "agency"}
+        )
         self.stdout.write(self.style.SUCCESS(f"{len(CATEGORIES)} categories, {len(INSTITUTIONS)} institutions ready."))
 
         if opts["demo"]:
             self._demo()
 
     def _demo(self):
-        planning = Organization.objects.get(short_name="MoPND")
+        team = Organization.objects.get(name=settings.PORTAL_ORGANIZATION)
         water = Organization.objects.get(short_name="MoWRD")
         users = [
-            ("specialist", "GIS", "Specialist", User.Role.SPECIALIST, water),
-            ("reviewer", "Data", "Reviewer", User.Role.REVIEWER, planning),
+            ("specialist", "Team", "Uploader", User.Role.SPECIALIST, team),
+            ("reviewer", "Team", "Reviewer", User.Role.REVIEWER, team),
             ("citizen", "Public", "User", User.Role.PUBLIC, None),
         ]
         for username, first, last, role, org in users:

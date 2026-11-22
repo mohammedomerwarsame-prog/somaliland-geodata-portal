@@ -7,7 +7,7 @@
     <p class="muted">Free for everyone. Registered users can download all open and registered-only datasets.</p>
     {% for field in form %}{% include "datasets/_field.html" %}{% endfor %}
     <button class="btn btn-green block big" type="submit">Register</button>
-    <p class="small muted">Government GIS staff: register first, then request upload access from your profile.</p>
+    <p class="small muted">Have data to publish? <a href="{% url 'datasets:share' %}">Send it to our team</a>.</p>
   </form>
 </div>
 {% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Share your data · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Share your data with us</h1>
+    <p>Have maps or spatial data that should be on the portal? Send it to our team. We check it, document it and publish it, with full credit to your institution.</p>
+  </div>
+</section>
+
+<div class="container share-layout">
+  <div>
+    <div class="contact-grid">
+      <a class="contact-card cc-telegram" href="{{ CONTRIBUTE_TELEGRAM_URL }}" target="_blank" rel="noopener">
+        <span class="cc-icon"><i class="bi bi-telegram"></i></span>
+        <div>
+          <strong>Telegram</strong>
+          <span>{{ CONTRIBUTE_TELEGRAM_HANDLE }}</span>
+          <small>Fastest. Send files up to 2 GB.</small>
+        </div>
+        <i class="bi bi-arrow-up-right cc-arrow"></i>
+      </a>
+      <a class="contact-card cc-email" href="mailto:{{ CONTRIBUTE_EMAIL }}?subject=Data%20for%20the%20GeoData%20Portal">
+        <span class="cc-icon"><i class="bi bi-envelope-fill"></i></span>
+        <div>
+          <strong>Email</strong>
+          <span>{{ CONTRIBUTE_EMAIL }}</span>
+          <small>For small files or a download link.</small>
+        </div>
+        <i class="bi bi-arrow-up-right cc-arrow"></i>
+      </a>
+      {% if CONTRIBUTE_PHONE %}
+      <a class="contact-card cc-phone" href="tel:{{ CONTRIBUTE_PHONE }}">
+        <span class="cc-icon"><i class="bi bi-telephone-fill"></i></span>
+        <div><strong>Phone</strong><span>{{ CONTRIBUTE_PHONE }}</span><small>Questions before sending.</small></div>
+        <i class="bi bi-arrow-up-right cc-arrow"></i>
+      </a>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2>What to send</h2>
+      <ol class="send-list">
+        <li><strong>The data file</strong>: a zipped shapefile (.shp, .shx, .dbf, .prj), GeoJSON, GeoPackage, GeoTIFF, KML or CSV with coordinates.</li>
+        <li><strong>A short description</strong>: what the data shows, which area it covers, and when it was collected.</li>
+        <li><strong>The source</strong>: your institution's name, and who produced the data.</li>
+        <li><strong>Permission</strong>: confirm that the data can be shared publicly, or tell us if it should be for registered users only.</li>
+      </ol>
+      <div class="alert alert-warning"><i class="bi bi-shield-exclamation"></i> Please remove personal information (names, phone numbers, ID numbers) before sending.</div>
+    </div>
+  </div>
+
+  <aside class="side-stack">
+    <div class="panel">
+      <h3>What happens next</h3>
+      <ul class="timeline">
+        <li><span>1</span><div><strong>We receive it</strong><small>We confirm we received your data.</small></div></li>
+        <li><span>2</span><div><strong>We check it</strong><small>We check the file, location and description.</small></div></li>
+        <li><span>3</span><div><strong>We publish it</strong><small>It appears in the catalog, credited to your institution.</small></div></li>
+      </ul>
+    </div>
+    <div class="panel muted-panel">
+      <p class="small">The portal is run by <strong>{{ PORTAL_ORGANIZATION }}</strong>. To keep the data trustworthy, only our team uploads to the portal.</p>
+    </div>
+  </aside>
+</div>
+{% endblock %}

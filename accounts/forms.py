@@ -1,9 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from organizations.models import Organization
-
-from .models import SpecialistRequest, User
+from .models import User
 
 
 class SignUpForm(UserCreationForm):
@@ -36,12 +34,3 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "email", "job_title", "phone")
-
-
-class SpecialistRequestForm(forms.ModelForm):
-    organization = forms.ModelChoiceField(queryset=Organization.objects.filter(is_active=True))
-
-    class Meta:
-        model = SpecialistRequest
-        fields = ("organization", "job_title", "work_email", "justification")
-        widgets = {"justification": forms.Textarea(attrs={"rows": 4})}

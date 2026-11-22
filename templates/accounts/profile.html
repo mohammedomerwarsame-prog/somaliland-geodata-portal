@@ -15,23 +15,17 @@
 
   <aside class="side-stack">
     <div class="panel">
-      <h3>Upload access</h3>
       {% if user.can_upload %}
-        <p><i class="bi bi-patch-check-fill ok"></i> You can upload data for <strong>{{ user.organization.name }}</strong>.</p>
+        <h3>Team member</h3>
+        <p><i class="bi bi-patch-check-fill ok"></i> You can upload data to the portal.</p>
         <a class="btn btn-green block" href="{% url 'datasets:my_uploads' %}">Go to my uploads</a>
       {% else %}
-        <p>Public accounts can browse and download. GIS staff of government institutions can request upload rights.</p>
-        <a class="btn btn-green block" href="{% url 'accounts:request_specialist' %}">Request specialist access</a>
+        <h3>Have data to share?</h3>
+        <p>Your account can browse and download every dataset. To publish data, send it to our team.</p>
+        <a class="btn btn-green block" href="{{ CONTRIBUTE_TELEGRAM_URL }}" target="_blank" rel="noopener"><i class="bi bi-telegram"></i> Send on Telegram</a>
+        <a class="btn btn-ghost-dark block" href="{% url 'datasets:share' %}">What to send</a>
       {% endif %}
     </div>
-    {% if specialist_requests %}
-    <div class="panel">
-      <h3 class="small-head">My requests</h3>
-      <ul class="plain-list">
-        {% for r in specialist_requests %}<li>{{ r.organization.name }} — <span class="status status-{{ r.status }}">{{ r.get_status_display }}</span>{% if r.admin_note %}<br><small>{{ r.admin_note }}</small>{% endif %}</li>{% endfor %}
-      </ul>
-    </div>
-    {% endif %}
   </aside>
 </div>
 {% endblock %}

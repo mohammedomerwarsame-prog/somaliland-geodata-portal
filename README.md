@@ -12,22 +12,31 @@ Built with Django 5. It runs on SQLite for development and PostgreSQL in product
 |---|---|---|
 | Visitor | Anyone | Browse catalog & map, download *open* datasets |
 | Public user | Anyone who registers | + download *registered-only* datasets |
-| GIS specialist | Approved staff of an institution | + upload datasets for their institution, edit them while pending/returned |
-| Data reviewer | Senior staff / data office | + approve or return uploads (never their own) |
-| Administrator | Django superuser | Everything, incl. institutions, users, categories |
+| Team uploader | Staff of the organization that runs the portal | + upload datasets (their own, or data sent in by other institutions) |
+| Team reviewer | Senior staff of the same organization | + approve or return uploads (never their own) |
+| Administrator | Django superuser | Everything, incl. users, institutions, categories |
 
-**Nobody can make themselves a specialist.** Sign-up always creates a public account. To get upload rights:
-1. The person registers, then goes to **Profile → Request specialist access** and picks their institution.
-2. An administrator opens **Admin → Specialist requests**, checks the request (for example by calling the institution) and runs the **"Approve"** action.
+**Only your team uploads.** Sign-up always creates a public account, and there is no way to request upload rights from the website.
+To add a team member: **Admin → Users** → select the user → action **"Set role: Team uploader"** (or *Team reviewer*).
 
-Admins can also set roles directly in **Admin → Users** (actions: *Set role: GIS specialist / reviewer / public*).
+**Outside institutions send data to the team** using the contacts on the **Share your data** page (`/share-data/`): Telegram, email and phone, set in `.env`:
+
+```
+PORTAL_ORGANIZATION=Your organization name
+CONTRIBUTE_TELEGRAM_URL=https://t.me/yourusername
+CONTRIBUTE_TELEGRAM_HANDLE=@yourusername
+CONTRIBUTE_EMAIL=data@yourdomain.so
+CONTRIBUTE_PHONE=+252 ...
+```
+
+When a team member uploads data received from an institution, they choose it as the **Source institution**, so the dataset is credited to that institution.
 
 ## Publishing workflow
 
 ```
-Specialist uploads ──► PENDING ──► Reviewer approves ──► PUBLISHED (visible to all)
+Institution sends data (Telegram/email) ──► Team uploads ──► PENDING ──► Reviewer approves ──► PUBLISHED (visible to all)
                           │
-                          └──► Reviewer requests changes ──► RETURNED ──► specialist edits ──► PENDING
+                          └──► Reviewer requests changes ──► RETURNED ──► uploader edits ──► PENDING
 ```
 
 Dataset files are stored in `private_media/`, **outside** the public media folder. Downloads always go through the portal. It checks status and access level, and counts every download (see `DownloadLog` in the admin).
@@ -55,7 +64,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000. Demo logins (password `ChangeMe-2026!`): `specialist`, `reviewer`, `citizen`.
+Open http://127.0.0.1:8000. Demo logins (password `ChangeMe-2026!`): `specialist` (team uploader), `reviewer` (team reviewer), `citizen` (public user).
 **Delete the demo users before going live.**
 
 ## Supported upload formats
@@ -73,7 +82,7 @@ Maximum size: `MAX_UPLOAD_MB` (default 500). Your web server must allow the same
 
 ```
 config/          settings, urls, wsgi
-accounts/        User (with role + institution), SpecialistRequest, login/register/profile
+accounts/        User (with role), login/register/profile
 organizations/   Government institutions
 datasets/        Dataset, Category, DownloadLog, upload/review/catalog/map views, file checks
   management/commands/seed_portal.py

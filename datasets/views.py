@@ -155,21 +155,25 @@ def about(request):
     return render(request, "pages/about.html")
 
 
+def share(request):
+    """How outside institutions and people send data to the portal team."""
+    return render(request, "pages/share.html")
+
+
 # ------------------------------------------------------------ specialist pages
 
 @specialist_required
 def upload(request):
-    form = DatasetForm(request.POST or None, request.FILES or None)
+    form = DatasetForm(
+        request.POST or None, request.FILES or None,
+        initial={"organization": request.user.organization_id},
+    )
     if request.method == "POST" and form.is_valid():
         ds = form.save(commit=False)
         ds.uploaded_by = request.user
-        ds.organization = request.user.organization
         ds.status = Dataset.Status.PENDING
         for key, value in form.detected.items():
             setattr(ds, key, value)
-        if ds.organization is None:  # superuser without an institution
-            messages.error(request, "Your account is not linked to an institution. Set one in the admin.")
-            return redirect("datasets:upload")
         ds.save()
         messages.success(request, f"“{ds.title}” was submitted. A reviewer will check it before it is published.")
         return redirect("datasets:my_uploads")
@@ -197,12 +201,9 @@ def edit(request, slug):
 @specialist_required
 def my_uploads(request):
     uploads = request.user.uploads.select_related("category").order_by("-created_at")
-    org_uploads = None
-    if request.user.organization_id:
-        org_uploads = Dataset.objects.filter(organization=request.user.organization).exclude(
-            uploaded_by=request.user
-        ).order_by("-created_at")[:20]
-    return render(request, "datasets/my_uploads.html", {"uploads": uploads, "org_uploads": org_uploads})
+    team_uploads = Dataset.objects.exclude(uploaded_by=request.user).select_related(
+        "uploaded_by", "organization").order_by("-created_at")[:20]
+    return render(request, "datasets/my_uploads.html", {"uploads": uploads, "team_uploads": team_uploads})
 
 
 # -------------------------------------------------------------- reviewer pages

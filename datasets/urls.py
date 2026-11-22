@@ -9,6 +9,7 @@ urlpatterns = [
     path("catalog/", views.catalog, name="catalog"),
     path("map/", views.map_viewer, name="map"),
     path("about/", views.about, name="about"),
+    path("share-data/", views.share, name="share"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("contribute/", views.upload, name="upload"),
     path("contribute/my-uploads/", views.my_uploads, name="my_uploads"),

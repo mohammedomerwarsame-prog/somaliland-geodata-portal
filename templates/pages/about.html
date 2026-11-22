@@ -11,13 +11,14 @@
   <table class="meta-table">
     <tr><th>Visitors</th><td>Browse the catalog and map, and download open datasets. No account needed.</td></tr>
     <tr><th>Registered users</th><td>Everything above, plus datasets marked "registered users only".</td></tr>
-    <tr><th>GIS specialists</th><td>Staff of government institutions, approved by an administrator. They upload data on behalf of their institution.</td></tr>
-    <tr><th>Data reviewers</th><td>Check every upload (file, metadata, licence, personal data) and approve or return it. Nothing is published without review.</td></tr>
+    <tr><th>Portal team</th><td>Staff of {{ PORTAL_ORGANIZATION }}. Only the team uploads data, including data sent to us by other institutions.</td></tr>
+    <tr><th>Team reviewers</th><td>Check every upload (file, description, licence, personal data) and approve or return it. Nothing is published without review.</td></tr>
   </table>
 
   <h2>How data gets published</h2>
+  <p>Institutions that want to publish data <a href="{% url 'datasets:share' %}">send it to our team</a> on Telegram or email.</p>
   <ol>
-    <li>A specialist uploads a file and fills in the metadata.</li>
+    <li>A team member uploads the file and describes it, crediting the source institution.</li>
     <li>The dataset waits in the review queue; it is not public yet.</li>
     <li>A reviewer approves it (published) or requests changes (returned to the specialist).</li>
   </ol>

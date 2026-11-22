@@ -4,7 +4,7 @@
 <section class="page-head">
   <div class="container">
     <h1>{% if ds %}Edit &amp; resubmit: {{ ds.title }}{% else %}Upload a dataset{% endif %}</h1>
-    <p>Publishing for <strong>{{ user.organization.name|default:"(no institution set)" }}</strong>. Every upload is checked by a reviewer before it becomes public.</p>
+    <p>Upload data produced by your team or received from an institution. Choose the <strong>source institution</strong> so it gets the credit. Every upload is checked by a reviewer before it becomes public.</p>
   </div>
 </section>
 
@@ -21,6 +21,7 @@
 
     <fieldset>
       <legend>2. Describe the data</legend>
+      {% include "datasets/_field.html" with field=form.organization %}
       {% include "datasets/_field.html" with field=form.title %}
       {% include "datasets/_field.html" with field=form.summary %}
       {% include "datasets/_field.html" with field=form.description %}
@@ -56,6 +57,7 @@
       <li><strong>Rasters:</strong> GeoTIFF, ideally Cloud-Optimized.</li>
       <li>Remove personal data (names, phone numbers, household IDs) before publishing.</li>
       <li>Boundary data: add a disclaimer stating the source and status.</li>
+      <li>Data received on Telegram or email: write in <em>Source</em> who sent it and when.</li>
     </ul>
   </aside>
 </div>

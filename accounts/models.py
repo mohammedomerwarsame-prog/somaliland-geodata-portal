@@ -7,16 +7,16 @@ class User(AbstractUser):
     """
     Portal user. Three roles:
 
-    * PUBLIC      – anyone who registers; can browse and download data.
-    * SPECIALIST  – GIS staff of a government institution; can upload data
-                    on behalf of their institution. Uploads wait for review.
-    * REVIEWER    – senior staff / data office; approves or rejects uploads.
-                    Reviewers can also upload.
+    * PUBLIC      – everyone who registers; can browse and download data.
+    * SPECIALIST  – staff of the organization that runs the portal; uploads
+                    data, including data received from other institutions
+                    (by Telegram, email, etc.). Uploads wait for review.
+    * REVIEWER    – senior staff of the same organization; approves or
+                    returns uploads. Reviewers can also upload.
 
     Superusers (Django admin) can do everything.
-    Roles are never chosen by the user: public sign-up always creates PUBLIC
-    accounts. Specialist access is granted by an administrator, either directly
-    in the admin or by approving a SpecialistRequest.
+    Public sign-up always creates PUBLIC accounts. Only an administrator can
+    give someone the SPECIALIST or REVIEWER role (Admin → Users).
     """
 
     class Role(models.TextChoices):
@@ -41,7 +41,7 @@ class User(AbstractUser):
     def can_upload(self):
         if self.is_superuser:
             return True
-        return self.role in (self.Role.SPECIALIST, self.Role.REVIEWER) and self.organization_id is not None
+        return self.role in (self.Role.SPECIALIST, self.Role.REVIEWER)
 
     @property
     def can_review(self):

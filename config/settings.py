@@ -151,6 +151,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 PORTAL_NAME = env("PORTAL_NAME", "Somaliland GeoData Portal")
 PORTAL_TAGLINE = env("PORTAL_TAGLINE", "Explore • Access • Share Geospatial Data")
 
+# The organization that runs the portal. Only its staff (accounts created by an
+# administrator) can upload. Everyone else downloads, and sends data to the team
+# through the channels below.
+PORTAL_ORGANIZATION = env("PORTAL_ORGANIZATION", "Somaliland GeoData Portal Team")
+CONTRIBUTE_TELEGRAM_URL = env("CONTRIBUTE_TELEGRAM_URL", "https://t.me/your_telegram_username")
+CONTRIBUTE_TELEGRAM_HANDLE = env("CONTRIBUTE_TELEGRAM_HANDLE", "@your_telegram_username")
+CONTRIBUTE_EMAIL = env("CONTRIBUTE_EMAIL", "data@example.org")
+CONTRIBUTE_PHONE = env("CONTRIBUTE_PHONE", "")
+
 # Production hardening (active when DEBUG is off)
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

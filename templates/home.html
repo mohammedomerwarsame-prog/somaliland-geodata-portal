@@ -59,10 +59,10 @@
       <h3>Data Catalog</h3><p>Search and filter every published dataset by theme or institution.</p>
       <span class="tile-link">Browse data <i class="bi bi-arrow-right"></i></span>
     </a>
-    <a class="tile" href="{% url 'datasets:upload' %}">
-      <span class="tile-icon ti-orange"><i class="bi bi-cloud-arrow-up"></i></span>
-      <h3>Contribute Data</h3><p>For approved GIS specialists of government institutions.</p>
-      <span class="tile-link">Upload <i class="bi bi-arrow-right"></i></span>
+    <a class="tile" href="{% url 'datasets:share' %}">
+      <span class="tile-icon ti-orange"><i class="bi bi-send"></i></span>
+      <h3>Share Your Data</h3><p>Have data to publish? Send it to our team on Telegram or email.</p>
+      <span class="tile-link">How to send <i class="bi bi-arrow-right"></i></span>
     </a>
     <a class="tile" href="{% url 'datasets:about' %}">
       <span class="tile-icon ti-teal"><i class="bi bi-journal-text"></i></span>
@@ -107,8 +107,8 @@
 <section class="container section">
   <div class="section-head center"><div><span class="kicker">Trusted process</span><h2>How data gets published</h2></div></div>
   <div class="steps">
-    <div class="step"><span class="step-num">1</span><i class="bi bi-person-badge"></i><h3>Specialist uploads</h3><p>An approved GIS specialist submits a dataset with its description, source and licence.</p></div>
-    <div class="step"><span class="step-num">2</span><i class="bi bi-clipboard-check"></i><h3>Reviewer checks</h3><p>A data reviewer verifies the file, metadata and that no personal information is included.</p></div>
+    <div class="step"><span class="step-num">1</span><i class="bi bi-send"></i><h3>Data is sent to us</h3><p>Institutions send their data to our team on Telegram or email, with a description and source.</p></div>
+    <div class="step"><span class="step-num">2</span><i class="bi bi-clipboard-check"></i><h3>Our team checks it</h3><p>We check the file, describe it properly and make sure no personal information is included.</p></div>
     <div class="step"><span class="step-num">3</span><i class="bi bi-globe2"></i><h3>Published for all</h3><p>The dataset appears in the catalog and map, ready for anyone to download and use.</p></div>
   </div>
 </section>
@@ -128,16 +128,15 @@
   </div>
 
   <div class="cta-card">
-    <i class="bi bi-cloud-arrow-up-fill"></i>
-    <h2>Are you a government GIS specialist?</h2>
-    <p>Share your institution's data with the public, other ministries and partners. Uploads are reviewed before publishing.</p>
+    <i class="bi bi-telegram"></i>
+    <h2>Have data to share?</h2>
+    <p>Send your maps and spatial data to our team. We check it, document it and publish it, credited to your institution.</p>
     {% if user.is_authenticated and user.can_upload %}
       <a class="btn btn-white big" href="{% url 'datasets:upload' %}"><i class="bi bi-upload"></i> Upload a dataset</a>
-    {% elif user.is_authenticated %}
-      <a class="btn btn-white big" href="{% url 'accounts:request_specialist' %}">Request upload access</a>
+      <small>You're signed in as a team member.</small>
     {% else %}
-      <a class="btn btn-white big" href="{% url 'accounts:login' %}?next={% url 'datasets:upload' %}"><i class="bi bi-box-arrow-in-right"></i> Log in to contribute</a>
-      <small>New here? <a href="{% url 'accounts:signup' %}">Create an account</a> and request access.</small>
+      <a class="btn btn-white big" href="{{ CONTRIBUTE_TELEGRAM_URL }}" target="_blank" rel="noopener"><i class="bi bi-telegram"></i> Send on Telegram</a>
+      <small>Or read <a href="{% url 'datasets:share' %}">what to send and how</a>.</small>
     {% endif %}
   </div>
 </section>

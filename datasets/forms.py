@@ -11,7 +11,7 @@ class DatasetForm(forms.ModelForm):
     class Meta:
         model = Dataset
         fields = (
-            "title", "summary", "description", "category", "keywords", "coverage_area",
+            "title", "summary", "description", "organization", "category", "keywords", "coverage_area",
             "source", "data_date", "license", "access_level", "disclaimer", "file", "thumbnail",
         )
         widgets = {
@@ -25,11 +25,15 @@ class DatasetForm(forms.ModelForm):
         help_texts = {
             "file": f"Allowed: {allowed_extensions_text()}. Shapefiles must be zipped (.shp, .shx, .dbf, .prj).",
             "thumbnail": "Optional preview image (PNG/JPG) shown in the catalog.",
+            "organization": "The institution that produced the data (shown as publisher). "
+                            "Add new institutions in Admin → Government institutions.",
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.detected = {}
+        self.fields["organization"].label = "Source institution"
+        self.fields["organization"].queryset = self.fields["organization"].queryset.filter(is_active=True)
         if self.instance.pk:
             self.fields["file"].required = False
 
