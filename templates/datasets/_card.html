@@ -1,0 +1,15 @@
+<article class="ds-card">
+  <a href="{{ ds.get_absolute_url }}" class="ds-thumb ds-thumb-{{ ds.data_type }}">
+    {% if ds.thumbnail %}<img src="{{ ds.thumbnail.url }}" alt="" loading="lazy">{% else %}<i class="bi {% if ds.data_type == 'raster' %}bi-grid-3x3-gap-fill{% elif ds.data_type == 'table' %}bi-table{% else %}bi-bezier2{% endif %}"></i>{% endif %}
+  </a>
+  <div class="ds-body">
+    <h3><a href="{{ ds.get_absolute_url }}">{{ ds.title }}</a></h3>
+    <p class="ds-org">{{ ds.organization.short_name|default:ds.organization.name }}</p>
+    <div class="ds-tags">
+      <span class="tag tag-{{ ds.data_type }}">{{ ds.get_data_type_display }}</span>
+      <span class="tag">{{ ds.file_format }}</span>
+      <span class="tag tag-muted">Updated {{ ds.updated_at|date:"Y" }}</span>
+    </div>
+    <a class="btn btn-navy block" href="{% url 'datasets:download' ds.slug %}"><i class="bi bi-download"></i> Download</a>
+  </div>
+</article>

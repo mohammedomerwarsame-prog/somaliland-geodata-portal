@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}About · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container">
+  <h1>About the portal</h1>
+  <p>A single, trusted place to find official geospatial data.</p>
+</div></section>
+
+<div class="container prose panel">
+  <h2>Who can do what</h2>
+  <table class="meta-table">
+    <tr><th>Visitors</th><td>Browse the catalog and map, and download open datasets. No account needed.</td></tr>
+    <tr><th>Registered users</th><td>Everything above, plus datasets marked "registered users only".</td></tr>
+    <tr><th>GIS specialists</th><td>Staff of government institutions, approved by an administrator. They upload data on behalf of their institution.</td></tr>
+    <tr><th>Data reviewers</th><td>Check every upload (file, metadata, licence, personal data) and approve or return it. Nothing is published without review.</td></tr>
+  </table>
+
+  <h2>How data gets published</h2>
+  <ol>
+    <li>A specialist uploads a file and fills in the metadata.</li>
+    <li>The dataset waits in the review queue; it is not public yet.</li>
+    <li>A reviewer approves it (published) or requests changes (returned to the specialist).</li>
+  </ol>
+
+  <h2 id="terms">Terms of use</h2>
+  <p><em>[Placeholder: the responsible ministry should supply the official terms.]</em> Each dataset states its own licence. Credit the publishing institution when you use the data.</p>
+  <p>Boundaries and names shown on maps are for reference and carry the status stated by the publishing institution.</p>
+
+  <h2 id="privacy">Privacy policy</h2>
+  <p><em>[Placeholder.]</em> We store your name, email and download history to run the service and produce usage statistics. We do not sell personal data.</p>
+
+  <h2 id="contact">Contact</h2>
+  <p><em>[Placeholder: official email and address of the coordinating office.]</em></p>
+</div>
+{% endblock %}

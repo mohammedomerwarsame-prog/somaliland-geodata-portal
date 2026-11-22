@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load humanize l10n %}
+{% block title %}{{ ds.title }} · {{ PORTAL_NAME }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="crumbs"><a href="{% url 'datasets:catalog' %}">Data Catalog</a> / <a href="{% url 'datasets:catalog' %}?category={{ ds.category.slug }}">{{ ds.category.name }}</a></p>
+    <h1>{{ ds.title }}</h1>
+    <p>{{ ds.summary }}</p>
+    {% if ds.status != 'published' %}<span class="status status-{{ ds.status }}">{{ ds.get_status_display }}</span>{% endif %}
+  </div>
+</section>
+
+<div class="container detail-layout">
+  <section class="panel">
+    {% if ds.status == 'rejected' and ds.review_note %}
+      <div class="alert alert-warning"><strong>Reviewer feedback:</strong> {{ ds.review_note|linebreaksbr }}</div>
+    {% endif %}
+    {% if ds.disclaimer %}<div class="alert alert-info"><i class="bi bi-info-circle"></i> {{ ds.disclaimer|linebreaksbr }}</div>{% endif %}
+
+    {% if ds.has_bbox %}<div id="detail-map" class="detail-map"></div>{% endif %}
+
+    <h2>Description</h2>
+    {% if ds.description %}{{ ds.description|linebreaks }}{% else %}<p class="muted">No detailed description provided.</p>{% endif %}
+
+    <h2>Metadata</h2>
+    <table class="meta-table">
+      <tr><th>Publisher</th><td>{{ ds.organization.name }}</td></tr>
+      <tr><th>Category</th><td>{{ ds.category.name }}</td></tr>
+      <tr><th>Data type</th><td>{{ ds.get_data_type_display }}</td></tr>
+      <tr><th>Format</th><td>{{ ds.file_format }}</td></tr>
+      <tr><th>File size</th><td>{{ ds.file_size|filesizeformat }}</td></tr>
+      <tr><th>Coordinate system</th><td>{{ ds.crs }}</td></tr>
+      {% if ds.feature_count %}<tr><th>Features</th><td>{{ ds.feature_count|intcomma }}</td></tr>{% endif %}
+      {% if ds.coverage_area %}<tr><th>Coverage</th><td>{{ ds.coverage_area }}</td></tr>{% endif %}
+      {% if ds.data_date %}<tr><th>Data date</th><td>{{ ds.data_date }}</td></tr>{% endif %}
+      {% if ds.source %}<tr><th>Source</th><td>{{ ds.source }}</td></tr>{% endif %}
+      <tr><th>Licence</th><td>{{ ds.get_license_display }}</td></tr>
+      <tr><th>Access</th><td>{{ ds.get_access_level_display }}</td></tr>
+      {% if ds.has_bbox %}<tr><th>Bounding box</th><td>{{ ds.min_lon|floatformat:4 }}, {{ ds.min_lat|floatformat:4 }} – {{ ds.max_lon|floatformat:4 }}, {{ ds.max_lat|floatformat:4 }}</td></tr>{% endif %}
+      <tr><th>Published</th><td>{{ ds.published_at|date:"j M Y"|default:"—" }}</td></tr>
+      <tr><th>Last updated</th><td>{{ ds.updated_at|date:"j M Y" }}</td></tr>
+    </table>
+    {% if ds.keyword_list %}<div class="ds-tags">{% for k in ds.keyword_list %}<a class="tag" href="{% url 'datasets:catalog' %}?q={{ k|urlencode }}">{{ k }}</a>{% endfor %}</div>{% endif %}
+  </section>
+
+  <aside class="side-stack">
+    <div class="panel">
+      {% if can_download %}
+        <a class="btn btn-green block big" href="{% url 'datasets:download' ds.slug %}"><i class="bi bi-download"></i> Download ({{ ds.file_size|filesizeformat }})</a>
+      {% else %}
+        <a class="btn btn-navy block big" href="{% url 'accounts:login' %}?next={{ request.path }}"><i class="bi bi-lock"></i> Log in to download</a>
+      {% endif %}
+      {% if ds.can_preview_on_map and ds.status == 'published' %}
+        <a class="btn btn-ghost-dark block" href="{% url 'datasets:map' %}?dataset={{ ds.slug }}"><i class="bi bi-map"></i> Open in Map Viewer</a>
+      {% endif %}
+      {% if can_edit %}<a class="btn btn-ghost-dark block" href="{% url 'datasets:edit' ds.slug %}"><i class="bi bi-pencil"></i> Edit &amp; resubmit</a>{% endif %}
+      <p class="muted small">{{ ds.download_count|intcomma }} download{{ ds.download_count|pluralize }}</p>
+    </div>
+
+    {% if review_form %}
+    <div class="panel review-box">
+      <h3>Review this submission</h3>
+      <p class="small muted">Uploaded by {{ ds.uploaded_by }} ({{ ds.organization.short_name|default:ds.organization.name }}) on {{ ds.created_at|date:"j M Y" }}</p>
+      <form method="post" action="{% url 'datasets:review_action' ds.slug %}">{% csrf_token %}
+        <label class="radio"><input type="radio" name="decision" value="approve" checked> Approve &amp; publish</label>
+        <label class="radio"><input type="radio" name="decision" value="reject"> Request changes</label>
+        <label for="id_note">Note to uploader</label>
+        <textarea id="id_note" name="note" rows="3"></textarea>
+        <label class="check"><input type="checkbox" name="feature"> Feature on homepage</label>
+        <button class="btn btn-navy block" type="submit">Submit decision</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if related %}
+    <div class="panel">
+      <h3 class="small-head">Related datasets</h3>
+      <ul class="plain-list">{% for r in related %}<li><a href="{{ r.get_absolute_url }}">{{ r.title }}</a></li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if ds.has_bbox %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  (function () {
+    var b = [[{{ ds.min_lat|unlocalize }}, {{ ds.min_lon|unlocalize }}], [{{ ds.max_lat|unlocalize }}, {{ ds.max_lon|unlocalize }}]];
+    var map = L.map('detail-map', { scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    L.rectangle(b, { color: '#1e8e3e', weight: 2, fillOpacity: 0.08 }).addTo(map);
+    map.fitBounds(b, { padding: [20, 20], maxZoom: 10 });
+    {% if ds.can_preview_on_map and can_download %}
+    fetch('{% url "datasets:geojson" ds.slug %}').then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+      if (data) L.geoJSON(data, { pointToLayer: function (f, ll) { return L.circleMarker(ll, { radius: 5, color: '#0f2a4a', fillColor: '#1e8e3e', fillOpacity: .9 }); } }).addTo(map);
+    });
+    {% endif %}
+  })();
+</script>
+{% endif %}
+{% endblock %}

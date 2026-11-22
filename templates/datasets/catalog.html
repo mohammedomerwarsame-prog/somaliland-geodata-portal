@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Data Catalog · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Data Catalog</h1>
+    <p>Search and download official geospatial datasets.</p>
+    <form class="search-bar" method="get">
+      <input type="search" name="q" value="{{ form.q.value|default:'' }}" placeholder="Search datasets, regions or keywords…" aria-label="Search">
+      <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+    </form>
+  </div>
+</section>
+
+<div class="container catalog-layout">
+  <aside class="filters panel">
+    <form method="get">
+      <input type="hidden" name="q" value="{{ form.q.value|default:'' }}">
+      <h3 class="small-head">Category</h3>
+      <label class="radio"><input type="radio" name="category" value="" {% if not form.category.value %}checked{% endif %}> All</label>
+      {% for c in categories %}
+        <label class="radio"><input type="radio" name="category" value="{{ c.slug }}" {% if form.category.value == c.slug %}checked{% endif %}> {{ c.name }} <span class="muted">({{ c.n }})</span></label>
+      {% endfor %}
+
+      <h3 class="small-head">Data type</h3>
+      <select name="data_type">
+        {% for val, label in form.fields.data_type.choices %}<option value="{{ val }}" {% if form.data_type.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+
+      <h3 class="small-head">Institution</h3>
+      <select name="organization">
+        <option value="">All institutions</option>
+        {% for o in organizations %}<option value="{{ o.slug }}" {% if form.organization.value == o.slug %}selected{% endif %}>{{ o.name }}</option>{% endfor %}
+      </select>
+
+      <h3 class="small-head">Sort by</h3>
+      <select name="sort">
+        {% for val, label in form.fields.sort.choices %}<option value="{{ val }}" {% if form.sort.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+
+      <button class="btn btn-green block" type="submit">Apply filters</button>
+      <a class="btn btn-ghost-dark block" href="{% url 'datasets:catalog' %}">Clear</a>
+    </form>
+  </aside>
+
+  <section>
+    <p class="muted">{{ page.paginator.count }} dataset{{ page.paginator.count|pluralize }} found</p>
+    {% if page.object_list %}
+      <div class="card-grid three">
+        {% for ds in page.object_list %}{% include "datasets/_card.html" %}{% endfor %}
+      </div>
+      {% if page.has_other_pages %}
+      <nav class="pagination" aria-label="Pages">
+        {% if page.has_previous %}<a href="?{{ querystring }}&page={{ page.previous_page_number }}">&larr; Previous</a>{% endif %}
+        <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        {% if page.has_next %}<a href="?{{ querystring }}&page={{ page.next_page_number }}">Next &rarr;</a>{% endif %}
+      </nav>
+      {% endif %}
+    {% else %}
+      <p class="empty">No datasets match your search. Try fewer filters.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

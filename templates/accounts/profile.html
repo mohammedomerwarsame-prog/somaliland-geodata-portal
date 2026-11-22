@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My profile · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container">
+  <h1>My profile</h1>
+  <p>{{ user.get_role_display }}{% if user.organization %} · {{ user.organization.name }}{% endif %}</p>
+</div></section>
+
+<div class="container form-layout">
+  <form class="panel form" method="post">{% csrf_token %}
+    {% for field in form %}{% include "datasets/_field.html" %}{% endfor %}
+    <button class="btn btn-navy" type="submit">Save changes</button>
+    <a class="btn btn-ghost-dark" href="{% url 'accounts:password_change' %}">Change password</a>
+  </form>
+
+  <aside class="side-stack">
+    <div class="panel">
+      <h3>Upload access</h3>
+      {% if user.can_upload %}
+        <p><i class="bi bi-patch-check-fill ok"></i> You can upload data for <strong>{{ user.organization.name }}</strong>.</p>
+        <a class="btn btn-green block" href="{% url 'datasets:my_uploads' %}">Go to my uploads</a>
+      {% else %}
+        <p>Public accounts can browse and download. GIS staff of government institutions can request upload rights.</p>
+        <a class="btn btn-green block" href="{% url 'accounts:request_specialist' %}">Request specialist access</a>
+      {% endif %}
+    </div>
+    {% if specialist_requests %}
+    <div class="panel">
+      <h3 class="small-head">My requests</h3>
+      <ul class="plain-list">
+        {% for r in specialist_requests %}<li>{{ r.organization.name }} — <span class="status status-{{ r.status }}">{{ r.get_status_display }}</span>{% if r.admin_note %}<br><small>{{ r.admin_note }}</small>{% endif %}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

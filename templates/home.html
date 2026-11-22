@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static humanize %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <h1>{{ PORTAL_NAME }}</h1>
+      <p class="lead">Your trusted source for geographical data of Somaliland.</p>
+      <form class="search-bar" action="{% url 'datasets:catalog' %}" method="get" role="search">
+        <label for="hero-q" class="sr-only">Search datasets</label>
+        <input id="hero-q" type="search" name="q" placeholder="Search datasets, regions or keywords…">
+        <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+      </form>
+      <div class="chips">
+        {% for c in categories %}<a class="chip" href="{% url 'datasets:catalog' %}?category={{ c.slug }}">{{ c.name }}</a>{% endfor %}
+        <a class="chip" href="{% url 'datasets:catalog' %}">More <i class="bi bi-chevron-down"></i></a>
+      </div>
+    </div>
+
+    <div class="hero-map-wrap">
+      <div id="hero-map" class="hero-map" aria-label="Overview map"></div>
+      <aside class="glance">
+        <h2>Our Data at a Glance</h2>
+        <div class="glance-row"><i class="bi bi-database-fill"></i><div><strong>{{ stats.datasets|intcomma }}</strong><span>Datasets</span></div></div>
+        <div class="glance-row"><i class="bi bi-bank2"></i><div><strong>{{ stats.institutions }}</strong><span>Institutions</span></div></div>
+        <div class="glance-row"><i class="bi bi-download"></i><div><strong>{{ stats.downloads|intcomma }}</strong><span>Downloads</span></div></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="container tiles">
+  <a class="tile tile-blue" href="{% url 'datasets:map' %}"><i class="bi bi-map"></i><div><h3>Map Viewer</h3><p>Explore Somaliland with an interactive map</p></div><i class="bi bi-arrow-right arrow"></i></a>
+  <a class="tile tile-green" href="{% url 'datasets:catalog' %}"><i class="bi bi-database"></i><div><h3>Data Catalog</h3><p>Search, discover and download datasets</p></div><i class="bi bi-arrow-right arrow"></i></a>
+  <a class="tile tile-orange" href="{% url 'datasets:upload' %}"><i class="bi bi-cloud-arrow-up"></i><div><h3>Upload Data</h3><p>For approved government GIS specialists</p></div><i class="bi bi-arrow-right arrow"></i></a>
+  <a class="tile tile-teal" href="{% url 'datasets:about' %}"><i class="bi bi-info-circle"></i><div><h3>About &amp; Standards</h3><p>Licences, metadata and how to contribute</p></div><i class="bi bi-arrow-right arrow"></i></a>
+</section>
+
+<section class="container home-grid">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Featured Datasets</h2>
+      <a href="{% url 'datasets:catalog' %}">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    {% if featured %}
+      <div class="card-grid four">
+        {% for ds in featured %}{% include "datasets/_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">No datasets have been published yet. Approved specialists can <a href="{% url 'datasets:upload' %}">upload the first one</a>.</p>
+    {% endif %}
+  </div>
+
+  <aside class="side-stack">
+    <div class="panel contribute-box">
+      <i class="bi bi-cloud-arrow-up-fill big-icon"></i>
+      <h3>Are you a government GIS specialist?</h3>
+      <p>Upload shapefiles, GeoTIFFs and other spatial data on behalf of your institution.</p>
+      {% if user.is_authenticated and user.can_upload %}
+        <a class="btn btn-green block" href="{% url 'datasets:upload' %}"><i class="bi bi-upload"></i> Upload data</a>
+      {% elif user.is_authenticated %}
+        <a class="btn btn-green block" href="{% url 'accounts:request_specialist' %}">Request upload access</a>
+      {% else %}
+        <a class="btn btn-navy block" href="{% url 'accounts:login' %}?next={% url 'datasets:upload' %}"><i class="bi bi-box-arrow-in-right"></i> Log in to upload</a>
+        <small>No account? <a href="{% url 'accounts:signup' %}">Register</a>, then request specialist access.</small>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h3 class="small-head">Contributing institutions</h3>
+      <ul class="check-list">
+        {% for org in institutions %}<li><i class="bi bi-check-circle-fill"></i> <a href="{% url 'datasets:catalog' %}?organization={{ org.slug }}">{{ org.name }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </aside>
+</section>
+
+<section class="container trust-band">
+  <div><i class="bi bi-bank"></i> Government trusted</div>
+  <div><i class="bi bi-shield-check"></i> Reviewed before publishing</div>
+  <div><i class="bi bi-globe2"></i> Open for all</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  (function () {
+    if (!window.L) return;
+    var map = L.map('hero-map', { zoomControl: false, attributionControl: true, scrollWheelZoom: false })
+      .setView([9.8, 45.4], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18, attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    [['Hargeisa', 9.56, 44.065], ['Berbera', 10.439, 45.014], ['Borama', 9.936, 43.183], ['Burao', 9.522, 45.534], ['Erigavo', 10.616, 47.369]]
+      .forEach(function (c) { L.circleMarker([c[1], c[2]], { radius: 5, color: '#fff', weight: 2, fillColor: '#1e8e3e', fillOpacity: 1 }).addTo(map).bindTooltip(c[0]); });
+  })();
+</script>
+{% endblock %}

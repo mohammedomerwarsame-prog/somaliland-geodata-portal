@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Review queue · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Review queue</h1>
+    <p>Check each submission's file, metadata and licence before publishing. You cannot approve your own uploads.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="panel">
+    <h2>Waiting for review ({{ pending|length }})</h2>
+    {% if pending %}
+    <table class="data-table">
+      <thead><tr><th>Title</th><th>Institution</th><th>Uploaded by</th><th>Format</th><th>Size</th><th>Submitted</th><th></th></tr></thead>
+      <tbody>
+      {% for d in pending %}
+        <tr>
+          <td><a href="{{ d.get_absolute_url }}">{{ d.title }}</a><br><small class="muted">{{ d.category.name }}</small></td>
+          <td>{{ d.organization.short_name|default:d.organization.name }}</td>
+          <td>{{ d.uploaded_by }}</td>
+          <td>{{ d.file_format }}</td>
+          <td>{{ d.file_size|filesizeformat }}</td>
+          <td>{{ d.created_at|timesince }} ago</td>
+          <td><a class="btn btn-navy small-btn" href="{{ d.get_absolute_url }}">Review</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p class="empty"><i class="bi bi-check2-all"></i> Nothing waiting. Good work.</p>
+    {% endif %}
+  </div>
+
+  {% if recent %}
+  <div class="panel">
+    <h2>Recent decisions</h2>
+    <ul class="plain-list">
+      {% for d in recent %}<li><a href="{{ d.get_absolute_url }}">{{ d.title }}</a> — <span class="status status-{{ d.status }}">{{ d.get_status_display }}</span> by {{ d.reviewed_by }}, {{ d.reviewed_at|date:"j M Y" }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

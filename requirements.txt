@@ -1,0 +1,5 @@
+Django>=5.0,<6.0
+Pillow>=10.0
+# Production
+gunicorn>=22.0
+psycopg[binary]>=3.1

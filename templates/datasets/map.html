@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load l10n static %}
+{% block title %}Map Viewer · {{ PORTAL_NAME }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+{% block content %}
+<div class="map-app">
+  <aside class="layer-panel">
+    <h2>Layers</h2>
+    <input type="search" id="layer-filter" placeholder="Filter layers…" aria-label="Filter layers">
+    <ul id="layer-list">
+      {% for l in layers %}
+      <li data-title="{{ l.title|lower }}">
+        <label>
+          <input type="checkbox" class="layer-toggle"
+                 data-slug="{{ l.slug }}"
+                 data-title="{{ l.title }}"
+                 data-url="{% url 'datasets:detail' l.slug %}"
+                 data-preview="{% if l.can_preview_on_map %}{% url 'datasets:geojson' l.slug %}{% endif %}"
+                 {% if l.has_bbox %}data-bbox="{{ l.min_lon|unlocalize }},{{ l.min_lat|unlocalize }},{{ l.max_lon|unlocalize }},{{ l.max_lat|unlocalize }}"{% endif %}
+                 {% if focus == l.slug %}checked{% endif %}>
+          <span>{{ l.title }}<small>{{ l.organization.short_name|default:l.organization.name }} · {{ l.file_format }}</small></span>
+        </label>
+      </li>
+      {% empty %}
+      <li class="muted">No published layers yet.</li>
+      {% endfor %}
+    </ul>
+    <p class="small muted">GeoJSON layers draw on the map. Other formats show their coverage area. Download them for full detail.</p>
+  </aside>
+  <div id="map" class="map-canvas"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/map.js' %}"></script>
+{% endblock %}

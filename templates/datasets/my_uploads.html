@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}My uploads · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container head-row">
+    <div>
+      <h1>My uploads</h1>
+      <p>{{ user.organization.name }} · {{ user.get_role_display }}</p>
+    </div>
+    <a class="btn btn-green big" href="{% url 'datasets:upload' %}"><i class="bi bi-cloud-arrow-up"></i> Upload new dataset</a>
+  </div>
+</section>
+
+<div class="container">
+  <div class="panel">
+    {% if uploads %}
+    <table class="data-table">
+      <thead><tr><th>Title</th><th>Category</th><th>Format</th><th>Status</th><th>Submitted</th><th>Downloads</th><th></th></tr></thead>
+      <tbody>
+      {% for d in uploads %}
+        <tr>
+          <td><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></td>
+          <td>{{ d.category.name }}</td>
+          <td>{{ d.file_format }}</td>
+          <td><span class="status status-{{ d.status }}">{{ d.get_status_display }}</span></td>
+          <td>{{ d.created_at|date:"j M Y" }}</td>
+          <td>{{ d.download_count }}</td>
+          <td>{% if d.status == 'pending' or d.status == 'rejected' %}<a href="{% url 'datasets:edit' d.slug %}">Edit</a>{% endif %}</td>
+        </tr>
+        {% if d.status == 'rejected' and d.review_note %}<tr class="note-row"><td colspan="7"><i class="bi bi-chat-left-text"></i> Reviewer: {{ d.review_note }}</td></tr>{% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p class="empty">You haven't uploaded anything yet.</p>
+    {% endif %}
+  </div>
+
+  {% if org_uploads %}
+  <div class="panel">
+    <h2>Other uploads from {{ user.organization.short_name|default:user.organization.name }}</h2>
+    <ul class="plain-list">
+      {% for d in org_uploads %}<li><a href="{{ d.get_absolute_url }}">{{ d.title }}</a> <span class="status status-{{ d.status }}">{{ d.get_status_display }}</span></li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Request specialist access · {{ PORTAL_NAME }}{% endblock %}
+{% block content %}
+<div class="container auth-wrap">
+  {% if pending %}
+    <div class="panel auth-card">
+      <h1>Request received</h1>
+      <p>Your request to upload for <strong>{{ pending.organization.name }}</strong> is waiting for an administrator. You'll get access as soon as it is approved.</p>
+      <a class="btn btn-navy" href="{% url 'datasets:catalog' %}">Browse the catalog</a>
+    </div>
+  {% else %}
+  <form class="panel form auth-card" method="post" novalidate>{% csrf_token %}
+    <h1>Request specialist access</h1>
+    <p class="muted">For GIS staff of government institutions who will publish data. An administrator checks every request, usually by contacting your institution.</p>
+    {% for field in form %}{% include "datasets/_field.html" %}{% endfor %}
+    <button class="btn btn-green block big" type="submit">Send request</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
