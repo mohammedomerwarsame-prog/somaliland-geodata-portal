@@ -177,8 +177,8 @@
         // thicker outer outline drawn on top
         L.geoJSON(data, { interactive: false, style: { color: '#138a43', weight: 3, fill: false, opacity: .85 } }).addTo(map);
         layer.bringToBack();
-        map.fitBounds(layer.getBounds(), { padding: [6, 6] });
-        window.addEventListener('resize', function () { map.fitBounds(layer.getBounds(), { padding: [6, 6] }); });
+        map.fitBounds(layer.getBounds(), { padding: [40, 40] });
+        window.addEventListener('resize', function () { map.invalidateSize(); map.fitBounds(layer.getBounds(), { padding: [40, 40] }); });
       })
       .catch(function () {});
 
