@@ -32,5 +32,6 @@
 {% endblock %}
 {% block scripts %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>window.BOUNDARY_URL = "{% static 'data/somaliland_boundary.geojson' %}";</script>
 <script src="{% static 'js/map.js' %}"></script>
 {% endblock %}

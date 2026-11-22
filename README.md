@@ -61,11 +61,21 @@ python manage.py makemigrations organizations accounts datasets
 python manage.py migrate
 python manage.py seed_portal --demo  # categories, institutions, demo users + sample dataset
 python manage.py createsuperuser
+python manage.py import_boundaries  # downloads regional boundaries for the map (needs internet)
 python manage.py runserver
 ```
 
 Open http://127.0.0.1:8000. Demo logins (password `ChangeMe-2026!`): `specialist` (team uploader), `reviewer` (team reviewer), `citizen` (public user).
 **Delete the demo users before going live.**
+
+## Boundaries on the map
+
+`python manage.py import_boundaries` downloads open regional outlines from [geoBoundaries](https://www.geoboundaries.org) (CC BY 4.0) and keeps the five northern regions. They are drawn on the homepage and Map Viewer, and published as a dataset with a disclaimer.
+
+If a ministry gives you an **official** boundary file, use it instead:
+```
+python manage.py import_boundaries --file official_boundary.geojson --keep-all
+```
 
 ## Supported upload formats
 

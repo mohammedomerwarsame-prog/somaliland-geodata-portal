@@ -13,7 +13,22 @@
   var streets = esri('World_Street_Map');
   var light = esri('Canvas/World_Light_Gray_Base', 16);
   var imagery = esri('World_Imagery');
-  L.control.layers({ 'Topographic': topo, 'Streets': streets, 'Light grey': light, 'Satellite': imagery }).addTo(map);
+  var layerControl = L.control.layers({ 'Topographic': topo, 'Streets': streets, 'Light grey': light, 'Satellite': imagery }).addTo(map);
+
+  // Regional boundaries overlay (on by default)
+  if (window.BOUNDARY_URL) {
+    fetch(window.BOUNDARY_URL).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+      if (!data) return;
+      var regions = L.geoJSON(data, {
+        style: { color: '#0d2847', weight: 1.2, fillColor: '#138a43', fillOpacity: .1 },
+        onEachFeature: function (f, l) { l.bindTooltip(f.properties.region, { sticky: true }); }
+      });
+      var outline = L.geoJSON(data, { interactive: false, style: { color: '#138a43', weight: 3, fill: false } });
+      var boundary = L.layerGroup([regions, outline]).addTo(map);
+      layerControl.addOverlay(boundary, 'Regional boundaries');
+      if (!document.querySelector('.layer-toggle:checked')) map.fitBounds(regions.getBounds(), { padding: [20, 20] });
+    }).catch(function () {});
+  }
   L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   var palette = ['#1e8e3e', '#1565c0', '#e8711a', '#6a3fb5', '#0f8a9d', '#c62828'];
