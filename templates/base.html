@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ PORTAL_NAME }}{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/emblem.svg' %}">
   <meta name="description" content="Official source for geographical data: boundaries, roads, water, elevation, land cover and more.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +43,9 @@
         <a href="{% url 'datasets:review_queue' %}" class="{% if url == 'review_queue' %}active{% endif %}">Review{% if pending_review_count %} <span class="badge-count">{{ pending_review_count }}</span>{% endif %}</a>
       {% endif %}
       <a href="{% url 'datasets:about' %}" class="{% if url == 'about' %}active{% endif %}">About</a>
+      {% if user.is_authenticated and user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="nav-admin"><i class="bi bi-gear-fill"></i> Admin</a>
+      {% endif %}
     </nav>
     {% endwith %}
 
