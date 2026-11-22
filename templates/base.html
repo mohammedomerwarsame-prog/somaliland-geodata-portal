@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ PORTAL_NAME }}{% endblock %}</title>
   <meta name="description" content="Official source for geographical data: boundaries, roads, water, elevation, land cover and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/portal.css' %}">
   {% block head %}{% endblock %}
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
+<div class="flag-stripe" aria-hidden="true"><span></span><span></span><span></span></div>
 
 <header class="site-header">
   <div class="container header-inner">
@@ -64,15 +68,39 @@
 <main id="main">{% block content %}{% endblock %}</main>
 
 <footer class="site-footer">
-  <div class="container footer-inner">
-    <span>© {% now "Y" %} {{ PORTAL_NAME }}. All rights reserved.</span>
-    <nav aria-label="Footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="{% url 'datasets:home' %}">
+        <img src="{% static 'images/emblem.svg' %}" alt="" class="brand-emblem" width="44" height="44">
+        <span><span class="brand-name">{{ PORTAL_NAME }}</span><span class="brand-tagline">{{ PORTAL_TAGLINE }}</span></span>
+      </a>
+      <p>The official platform for discovering and sharing geospatial data produced by government institutions.</p>
+    </div>
+    <div>
+      <h4>Data</h4>
+      <a href="{% url 'datasets:catalog' %}">Data Catalog</a>
+      <a href="{% url 'datasets:map' %}">Map Viewer</a>
+      <a href="{% url 'datasets:catalog' %}?sort=new">Latest datasets</a>
+    </div>
+    <div>
+      <h4>Contribute</h4>
+      <a href="{% url 'accounts:request_specialist' %}">Request upload access</a>
+      <a href="{% url 'datasets:upload' %}">Upload data</a>
+      <a href="{% url 'datasets:about' %}">Publishing standards</a>
+    </div>
+    <div>
+      <h4>Portal</h4>
       <a href="{% url 'datasets:about' %}">About</a>
       <a href="{% url 'datasets:about' %}#terms">Terms of Use</a>
       <a href="{% url 'datasets:about' %}#privacy">Privacy Policy</a>
       <a href="{% url 'datasets:about' %}#contact">Contact</a>
-    </nav>
-    <em>Building a Data-Driven Somaliland</em>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-inner">
+      <span>© {% now "Y" %} {{ PORTAL_NAME }}. All rights reserved.</span>
+      <em>Building a data-driven Somaliland</em>
+    </div>
   </div>
 </footer>
 {% block scripts %}{% endblock %}

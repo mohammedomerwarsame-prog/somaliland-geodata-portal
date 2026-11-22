@@ -22,6 +22,20 @@ TECH_FIELDS = ("file_format", "data_type", "file_size", "crs", "feature_count",
                "min_lon", "min_lat", "max_lon", "max_lat")
 
 
+CATEGORY_ICONS = {
+    "boundaries": "bi-bounding-box",
+    "roads": "bi-sign-turn-right",
+    "water": "bi-droplet-half",
+    "elevation": "bi-triangle",
+    "land-cover": "bi-tree",
+    "imagery": "bi-globe-americas",
+    "settlements": "bi-buildings",
+    "agriculture": "bi-flower1",
+    "services": "bi-hospital",
+    "environment": "bi-cloud-sun",
+}
+
+
 # ---------------------------------------------------------------- public pages
 
 def home(request):
@@ -35,17 +49,24 @@ def home(request):
         "datasets": published.count(),
         "institutions": Organization.objects.filter(datasets__status=Dataset.Status.PUBLISHED).distinct().count(),
         "downloads": published.aggregate(total=Sum("download_count"))["total"] or 0,
+        "themes": Category.objects.filter(datasets__status=Dataset.Status.PUBLISHED).distinct().count(),
     }
     institutions = (
         Organization.objects.filter(is_active=True)
         .annotate(n=Count("datasets", filter=Q(datasets__status=Dataset.Status.PUBLISHED)))
-        .order_by("-n", "name")[:6]
+        .order_by("-n", "name")[:8]
     )
+    categories = Category.objects.annotate(
+        n=Count("datasets", filter=Q(datasets__status=Dataset.Status.PUBLISHED))
+    )
+    themes = [(c, CATEGORY_ICONS.get(c.slug, "bi-layers")) for c in categories]
     return render(request, "home.html", {
         "featured": featured,
         "stats": stats,
         "institutions": institutions,
-        "categories": Category.objects.all()[:6],
+        "categories": categories[:6],
+        "themes": themes,
+        "recent": visible.order_by("-published_at")[:5],
     })
 
 

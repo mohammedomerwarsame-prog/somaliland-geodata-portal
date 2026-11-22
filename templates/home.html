@@ -3,84 +3,143 @@
 {% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
 
 {% block content %}
+<!-- ============ HERO ============ -->
 <section class="hero">
   <div class="container hero-inner">
     <div class="hero-text">
-      <h1>{{ PORTAL_NAME }}</h1>
-      <p class="lead">Your trusted source for geographical data of Somaliland.</p>
-      <form class="search-bar" action="{% url 'datasets:catalog' %}" method="get" role="search">
+      <span class="eyebrow"><i class="bi bi-patch-check-fill"></i> Official national geospatial data platform</span>
+      <h1>Reliable geographic data for <span class="hl">Somaliland</span></h1>
+      <p class="lead">Find, preview and download maps and spatial datasets published by government institutions, in one trusted place.</p>
+
+      <form class="search-bar big-search" action="{% url 'datasets:catalog' %}" method="get" role="search">
+        <i class="bi bi-search search-icon" aria-hidden="true"></i>
         <label for="hero-q" class="sr-only">Search datasets</label>
-        <input id="hero-q" type="search" name="q" placeholder="Search datasets, regions or keywords…">
-        <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+        <input id="hero-q" type="search" name="q" placeholder="Search roads, water points, boundaries…">
+        <button type="submit">Search</button>
       </form>
+
       <div class="chips">
+        <span class="chips-label">Popular:</span>
         {% for c in categories %}<a class="chip" href="{% url 'datasets:catalog' %}?category={{ c.slug }}">{{ c.name }}</a>{% endfor %}
-        <a class="chip" href="{% url 'datasets:catalog' %}">More <i class="bi bi-chevron-down"></i></a>
       </div>
     </div>
 
-    <div class="hero-map-wrap">
-      <div id="hero-map" class="hero-map" aria-label="Overview map"></div>
-      <aside class="glance">
-        <h2>Our Data at a Glance</h2>
-        <div class="glance-row"><i class="bi bi-database-fill"></i><div><strong>{{ stats.datasets|intcomma }}</strong><span>Datasets</span></div></div>
-        <div class="glance-row"><i class="bi bi-bank2"></i><div><strong>{{ stats.institutions }}</strong><span>Institutions</span></div></div>
-        <div class="glance-row"><i class="bi bi-download"></i><div><strong>{{ stats.downloads|intcomma }}</strong><span>Downloads</span></div></div>
-      </aside>
+    <div class="hero-visual">
+      <div class="map-frame">
+        <div class="map-frame-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="map-frame-title"><i class="bi bi-map"></i> Live map preview</span>
+        </div>
+        <div id="hero-map" class="hero-map" aria-label="Overview map of Somaliland"></div>
+      </div>
+      <div class="floating-badge fb-1"><i class="bi bi-shield-check"></i><div><strong>Reviewed</strong><span>before publishing</span></div></div>
+      <div class="floating-badge fb-2"><i class="bi bi-unlock"></i><div><strong>Open data</strong><span>free to download</span></div></div>
     </div>
   </div>
 </section>
 
-<section class="container tiles">
-  <a class="tile tile-blue" href="{% url 'datasets:map' %}"><i class="bi bi-map"></i><div><h3>Map Viewer</h3><p>Explore Somaliland with an interactive map</p></div><i class="bi bi-arrow-right arrow"></i></a>
-  <a class="tile tile-green" href="{% url 'datasets:catalog' %}"><i class="bi bi-database"></i><div><h3>Data Catalog</h3><p>Search, discover and download datasets</p></div><i class="bi bi-arrow-right arrow"></i></a>
-  <a class="tile tile-orange" href="{% url 'datasets:upload' %}"><i class="bi bi-cloud-arrow-up"></i><div><h3>Upload Data</h3><p>For approved government GIS specialists</p></div><i class="bi bi-arrow-right arrow"></i></a>
-  <a class="tile tile-teal" href="{% url 'datasets:about' %}"><i class="bi bi-info-circle"></i><div><h3>About &amp; Standards</h3><p>Licences, metadata and how to contribute</p></div><i class="bi bi-arrow-right arrow"></i></a>
+<!-- ============ STATS ============ -->
+<section class="container stats-strip" aria-label="Portal statistics">
+  <div class="stat"><span class="stat-icon si-blue"><i class="bi bi-database-fill"></i></span><div><strong>{{ stats.datasets|intcomma }}</strong><span>Published datasets</span></div></div>
+  <div class="stat"><span class="stat-icon si-green"><i class="bi bi-bank2"></i></span><div><strong>{{ stats.institutions }}</strong><span>Contributing institutions</span></div></div>
+  <div class="stat"><span class="stat-icon si-orange"><i class="bi bi-layers-fill"></i></span><div><strong>{{ stats.themes }}</strong><span>Data themes</span></div></div>
+  <div class="stat"><span class="stat-icon si-purple"><i class="bi bi-cloud-download-fill"></i></span><div><strong>{{ stats.downloads|intcomma }}</strong><span>Total downloads</span></div></div>
 </section>
 
-<section class="container home-grid">
-  <div class="panel">
-    <div class="panel-head">
-      <h2>Featured Datasets</h2>
-      <a href="{% url 'datasets:catalog' %}">View all <i class="bi bi-arrow-right"></i></a>
+<!-- ============ QUICK ACTIONS ============ -->
+<section class="container section">
+  <div class="tiles">
+    <a class="tile" href="{% url 'datasets:map' %}">
+      <span class="tile-icon ti-blue"><i class="bi bi-map"></i></span>
+      <h3>Map Viewer</h3><p>Explore layers on an interactive map of the country.</p>
+      <span class="tile-link">Open map <i class="bi bi-arrow-right"></i></span>
+    </a>
+    <a class="tile" href="{% url 'datasets:catalog' %}">
+      <span class="tile-icon ti-green"><i class="bi bi-grid-3x3-gap"></i></span>
+      <h3>Data Catalog</h3><p>Search and filter every published dataset by theme or institution.</p>
+      <span class="tile-link">Browse data <i class="bi bi-arrow-right"></i></span>
+    </a>
+    <a class="tile" href="{% url 'datasets:upload' %}">
+      <span class="tile-icon ti-orange"><i class="bi bi-cloud-arrow-up"></i></span>
+      <h3>Contribute Data</h3><p>For approved GIS specialists of government institutions.</p>
+      <span class="tile-link">Upload <i class="bi bi-arrow-right"></i></span>
+    </a>
+    <a class="tile" href="{% url 'datasets:about' %}">
+      <span class="tile-icon ti-teal"><i class="bi bi-journal-text"></i></span>
+      <h3>Standards &amp; Licences</h3><p>How data is reviewed, licensed and documented.</p>
+      <span class="tile-link">Learn more <i class="bi bi-arrow-right"></i></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ FEATURED ============ -->
+<section class="container section">
+  <div class="section-head">
+    <div><span class="kicker">Featured</span><h2>Featured datasets</h2></div>
+    <a class="btn btn-ghost-dark" href="{% url 'datasets:catalog' %}">View all datasets <i class="bi bi-arrow-right"></i></a>
+  </div>
+  {% if featured %}
+    <div class="card-grid four">{% for ds in featured %}{% include "datasets/_card.html" %}{% endfor %}</div>
+  {% else %}
+    <div class="empty-state"><i class="bi bi-inboxes"></i><h3>No datasets published yet</h3><p>Approved specialists can upload the first dataset.</p></div>
+  {% endif %}
+</section>
+
+<!-- ============ THEMES ============ -->
+<section class="section band-light">
+  <div class="container">
+    <div class="section-head center">
+      <div><span class="kicker">Browse</span><h2>Explore data by theme</h2><p class="muted">Every dataset is organised into a theme so you can find what you need quickly.</p></div>
     </div>
-    {% if featured %}
-      <div class="card-grid four">
-        {% for ds in featured %}{% include "datasets/_card.html" %}{% endfor %}
-      </div>
+    <div class="theme-grid">
+      {% for c, icon in themes %}
+      <a class="theme" href="{% url 'datasets:catalog' %}?category={{ c.slug }}">
+        <i class="bi {{ icon }}"></i>
+        <strong>{{ c.name }}</strong>
+        <span>{{ c.n }} dataset{{ c.n|pluralize }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="container section">
+  <div class="section-head center"><div><span class="kicker">Trusted process</span><h2>How data gets published</h2></div></div>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><i class="bi bi-person-badge"></i><h3>Specialist uploads</h3><p>An approved GIS specialist submits a dataset with its description, source and licence.</p></div>
+    <div class="step"><span class="step-num">2</span><i class="bi bi-clipboard-check"></i><h3>Reviewer checks</h3><p>A data reviewer verifies the file, metadata and that no personal information is included.</p></div>
+    <div class="step"><span class="step-num">3</span><i class="bi bi-globe2"></i><h3>Published for all</h3><p>The dataset appears in the catalog and map, ready for anyone to download and use.</p></div>
+  </div>
+</section>
+
+<!-- ============ INSTITUTIONS + CTA ============ -->
+<section class="container section two-up">
+  <div class="panel">
+    <div class="section-head"><div><span class="kicker">Partners</span><h2>Contributing institutions</h2></div></div>
+    <div class="org-grid">
+      {% for org in institutions %}
+      <a class="org" href="{% url 'datasets:catalog' %}?organization={{ org.slug }}">
+        <span class="org-badge">{{ org.short_name|default:org.name|slice:":5" }}</span>
+        <span><strong>{{ org.name }}</strong><small>{{ org.n }} dataset{{ org.n|pluralize }}</small></span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <i class="bi bi-cloud-arrow-up-fill"></i>
+    <h2>Are you a government GIS specialist?</h2>
+    <p>Share your institution's data with the public, other ministries and partners. Uploads are reviewed before publishing.</p>
+    {% if user.is_authenticated and user.can_upload %}
+      <a class="btn btn-white big" href="{% url 'datasets:upload' %}"><i class="bi bi-upload"></i> Upload a dataset</a>
+    {% elif user.is_authenticated %}
+      <a class="btn btn-white big" href="{% url 'accounts:request_specialist' %}">Request upload access</a>
     {% else %}
-      <p class="empty">No datasets have been published yet. Approved specialists can <a href="{% url 'datasets:upload' %}">upload the first one</a>.</p>
+      <a class="btn btn-white big" href="{% url 'accounts:login' %}?next={% url 'datasets:upload' %}"><i class="bi bi-box-arrow-in-right"></i> Log in to contribute</a>
+      <small>New here? <a href="{% url 'accounts:signup' %}">Create an account</a> and request access.</small>
     {% endif %}
   </div>
-
-  <aside class="side-stack">
-    <div class="panel contribute-box">
-      <i class="bi bi-cloud-arrow-up-fill big-icon"></i>
-      <h3>Are you a government GIS specialist?</h3>
-      <p>Upload shapefiles, GeoTIFFs and other spatial data on behalf of your institution.</p>
-      {% if user.is_authenticated and user.can_upload %}
-        <a class="btn btn-green block" href="{% url 'datasets:upload' %}"><i class="bi bi-upload"></i> Upload data</a>
-      {% elif user.is_authenticated %}
-        <a class="btn btn-green block" href="{% url 'accounts:request_specialist' %}">Request upload access</a>
-      {% else %}
-        <a class="btn btn-navy block" href="{% url 'accounts:login' %}?next={% url 'datasets:upload' %}"><i class="bi bi-box-arrow-in-right"></i> Log in to upload</a>
-        <small>No account? <a href="{% url 'accounts:signup' %}">Register</a>, then request specialist access.</small>
-      {% endif %}
-    </div>
-
-    <div class="panel">
-      <h3 class="small-head">Contributing institutions</h3>
-      <ul class="check-list">
-        {% for org in institutions %}<li><i class="bi bi-check-circle-fill"></i> <a href="{% url 'datasets:catalog' %}?organization={{ org.slug }}">{{ org.name }}</a></li>{% endfor %}
-      </ul>
-    </div>
-  </aside>
-</section>
-
-<section class="container trust-band">
-  <div><i class="bi bi-bank"></i> Government trusted</div>
-  <div><i class="bi bi-shield-check"></i> Reviewed before publishing</div>
-  <div><i class="bi bi-globe2"></i> Open for all</div>
 </section>
 {% endblock %}
 
@@ -89,13 +148,18 @@
 <script>
   (function () {
     if (!window.L) return;
-    var map = L.map('hero-map', { zoomControl: false, attributionControl: true, scrollWheelZoom: false })
-      .setView([9.8, 45.4], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18, attribution: '&copy; OpenStreetMap contributors'
+    var map = L.map('hero-map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true })
+      .setView([9.9, 45.6], 6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19, subdomains: 'abcd',
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
-    [['Hargeisa', 9.56, 44.065], ['Berbera', 10.439, 45.014], ['Borama', 9.936, 43.183], ['Burao', 9.522, 45.534], ['Erigavo', 10.616, 47.369]]
-      .forEach(function (c) { L.circleMarker([c[1], c[2]], { radius: 5, color: '#fff', weight: 2, fillColor: '#1e8e3e', fillOpacity: 1 }).addTo(map).bindTooltip(c[0]); });
+    [['Hargeisa', 9.56, 44.065, true], ['Berbera', 10.439, 45.014], ['Borama', 9.936, 43.183],
+     ['Burao', 9.522, 45.534], ['Erigavo', 10.616, 47.369]]
+      .forEach(function (c) {
+        L.circleMarker([c[1], c[2]], { radius: c[3] ? 8 : 6, color: '#fff', weight: 2.5, fillColor: c[3] ? '#c8102e' : '#1e8e3e', fillOpacity: 1 })
+          .addTo(map).bindTooltip(c[0], { permanent: true, direction: 'right', className: 'city-label' });
+      });
   })();
 </script>
 {% endblock %}

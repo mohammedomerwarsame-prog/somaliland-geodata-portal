@@ -4,16 +4,20 @@
 
   var map = L.map('map').setView([9.8, 45.4], 7);
 
-  var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+  var carto = '&copy; OpenStreetMap contributors &copy; CARTO';
+  var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, subdomains: 'abcd', attribution: carto
   }).addTo(map);
+  var light = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, subdomains: 'abcd', attribution: carto
+  });
+  var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, subdomains: 'abcd', attribution: carto
+  });
   var imagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19, attribution: 'Imagery &copy; Esri'
   });
-  var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-    maxZoom: 17, attribution: '&copy; OpenTopoMap (CC-BY-SA)'
-  });
-  L.control.layers({ 'Streets': osm, 'Satellite': imagery, 'Topographic': topo }).addTo(map);
+  L.control.layers({ 'Streets': streets, 'Light': light, 'Dark': dark, 'Satellite': imagery }).addTo(map);
   L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   var palette = ['#1e8e3e', '#1565c0', '#e8711a', '#6a3fb5', '#0f8a9d', '#c62828'];

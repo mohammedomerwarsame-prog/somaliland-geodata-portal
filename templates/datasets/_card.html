@@ -1,15 +1,20 @@
 <article class="ds-card">
   <a href="{{ ds.get_absolute_url }}" class="ds-thumb ds-thumb-{{ ds.data_type }}">
     {% if ds.thumbnail %}<img src="{{ ds.thumbnail.url }}" alt="" loading="lazy">{% else %}<i class="bi {% if ds.data_type == 'raster' %}bi-grid-3x3-gap-fill{% elif ds.data_type == 'table' %}bi-table{% else %}bi-bezier2{% endif %}"></i>{% endif %}
+    <span class="thumb-badge tag-{{ ds.data_type }}">{{ ds.get_data_type_display }}</span>
   </a>
   <div class="ds-body">
+    <p class="ds-org"><i class="bi bi-bank2"></i> {{ ds.organization.short_name|default:ds.organization.name }} · {{ ds.category.name }}</p>
     <h3><a href="{{ ds.get_absolute_url }}">{{ ds.title }}</a></h3>
-    <p class="ds-org">{{ ds.organization.short_name|default:ds.organization.name }}</p>
-    <div class="ds-tags">
-      <span class="tag tag-{{ ds.data_type }}">{{ ds.get_data_type_display }}</span>
-      <span class="tag">{{ ds.file_format }}</span>
-      <span class="tag tag-muted">Updated {{ ds.updated_at|date:"Y" }}</span>
+    <p class="ds-summary">{{ ds.summary|truncatechars:90 }}</p>
+    <div class="ds-meta">
+      <span><i class="bi bi-file-earmark"></i> {{ ds.file_format }}</span>
+      <span><i class="bi bi-calendar3"></i> {{ ds.updated_at|date:"M Y" }}</span>
+      <span><i class="bi bi-download"></i> {{ ds.download_count }}</span>
     </div>
-    <a class="btn btn-navy block" href="{% url 'datasets:download' ds.slug %}"><i class="bi bi-download"></i> Download</a>
+    <div class="ds-actions">
+      <a class="btn btn-ghost-dark" href="{{ ds.get_absolute_url }}">Details</a>
+      <a class="btn btn-navy" href="{% url 'datasets:download' ds.slug %}"><i class="bi bi-download"></i> Download</a>
+    </div>
   </div>
 </article>
