@@ -4,20 +4,16 @@
 
   var map = L.map('map').setView([9.8, 45.4], 7);
 
-  var carto = '&copy; OpenStreetMap contributors &copy; CARTO';
-  var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19, subdomains: 'abcd', attribution: carto
-  }).addTo(map);
-  var light = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19, subdomains: 'abcd', attribution: carto
-  });
-  var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19, subdomains: 'abcd', attribution: carto
-  });
-  var imagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 19, attribution: 'Imagery &copy; Esri'
-  });
-  L.control.layers({ 'Streets': streets, 'Light': light, 'Dark': dark, 'Satellite': imagery }).addTo(map);
+  function esri(service, maxZoom) {
+    return L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/' + service + '/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: maxZoom || 18, attribution: 'Tiles &copy; Esri'
+    });
+  }
+  var topo = esri('World_Topo_Map').addTo(map);
+  var streets = esri('World_Street_Map');
+  var light = esri('Canvas/World_Light_Gray_Base', 16);
+  var imagery = esri('World_Imagery');
+  L.control.layers({ 'Topographic': topo, 'Streets': streets, 'Light grey': light, 'Satellite': imagery }).addTo(map);
   L.control.scale({ metric: true, imperial: false }).addTo(map);
 
   var palette = ['#1e8e3e', '#1565c0', '#e8711a', '#6a3fb5', '#0f8a9d', '#c62828'];

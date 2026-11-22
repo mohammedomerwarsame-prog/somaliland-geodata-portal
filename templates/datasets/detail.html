@@ -92,7 +92,7 @@
   (function () {
     var b = [[{{ ds.min_lat|unlocalize }}, {{ ds.min_lon|unlocalize }}], [{{ ds.max_lat|unlocalize }}, {{ ds.max_lon|unlocalize }}]];
     var map = L.map('detail-map', { scrollWheelZoom: false });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', attribution: '&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18, attribution: 'Tiles &copy; Esri' }).addTo(map);
     L.rectangle(b, { color: '#1e8e3e', weight: 2, fillOpacity: 0.08 }).addTo(map);
     map.fitBounds(b, { padding: [20, 20], maxZoom: 10 });
     {% if ds.can_preview_on_map and can_download %}
