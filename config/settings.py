@@ -32,6 +32,18 @@ DEBUG = env_bool("DJANGO_DEBUG", True)
 ALLOWED_HOSTS = [h.strip() for h in env("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in env("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
 
+if DEBUG:
+    # Development only: GitHub Codespaces forwards requests through an HTTPS
+    # proxy, so the browser's Origin can be https://localhost:8000 or the
+    # *.app.github.dev address. Trust those so forms (login, register, upload) work.
+    ALLOWED_HOSTS += [".app.github.dev", "localhost", "127.0.0.1"]
+    CSRF_TRUSTED_ORIGINS += [
+        "https://localhost:8000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "https://*.app.github.dev",
+    ]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
