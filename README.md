@@ -102,6 +102,39 @@ private_media/   uploaded dataset files (created automatically; never served dir
 media/           thumbnails and logos (public)
 ```
 
+## Put the portal online (VPS)
+
+Recommended: a VPS (virtual server) with **Ubuntu 24.04**, 2 GB RAM and 50 GB+ disk, from DigitalOcean, Hetzner, Contabo or similar (about $6–12/month), plus a domain name.
+
+1. Buy the server and a domain. Point the domain's **A record** to the server's IP address.
+2. Connect to the server (`ssh root@SERVER_IP`) and run:
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/mohammedomerwarsame-prog/somaliland-geodata-portal/main/deploy/setup_server.sh -o setup.sh
+   sudo bash setup.sh yourdomain.com you@example.com
+   ```
+3. Create your administrator account:
+   ```bash
+   sudo -u geoportal /srv/geoportal/.venv/bin/python /srv/geoportal/manage.py createsuperuser
+   ```
+4. Edit `/srv/geoportal/.env` (organization name, Telegram, email), then `sudo systemctl restart geoportal`.
+
+**Updating** after new code is pushed to GitHub:
+```bash
+cd /srv/geoportal && sudo -u geoportal git pull
+sudo -u geoportal .venv/bin/pip install -r requirements.txt
+sudo -u geoportal .venv/bin/python manage.py migrate
+sudo -u geoportal .venv/bin/python manage.py collectstatic --noinput
+sudo systemctl restart geoportal
+```
+
+**Backups:** back up the `geoportal` PostgreSQL database (`pg_dump`) and the `/srv/geoportal-data` folder every day.
+
+## Working with ArcGIS and QGIS
+
+Uploads accept the formats used by ArcMap, ArcCatalog, ArcGIS Pro and QGIS: shapefiles and File Geodatabases (zipped), GeoPackage, GeoJSON, KML/KMZ, GML, GPX, CAD (DXF/DWG), MapInfo (zipped), GeoTIFF, ERDAS .img, JPEG 2000, ECW, MrSID, ASCII grid, ESRI Grid (zipped), NetCDF, LiDAR (LAS/LAZ), CSV/Excel, ArcGIS packages (.mpkx, .ppkx, .lpkx, .mpk, .lpk) and QGIS projects. Up to 2 GB per file.
+
+Every dataset page has a **"Use this data in GIS software"** guide with steps for QGIS, ArcGIS Pro and ArcMap/ArcCatalog. Public GeoJSON and GeoTIFF datasets also get a **direct data link** that QGIS can load without downloading.
+
 ## Before going live: checklist
 
 - [ ] `DJANGO_DEBUG=False`, a long random `DJANGO_SECRET_KEY`, real `DJANGO_ALLOWED_HOSTS`

@@ -9,6 +9,7 @@ from django.db import transaction
 from django.db.models import Count, F, Q, Sum
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -34,6 +35,37 @@ CATEGORY_ICONS = {
     "services": "bi-hospital",
     "environment": "bi-cloud-sun",
 }
+
+
+def gis_kind(ds):
+    """Which set of desktop-GIS instructions fits this dataset's format."""
+    f = (ds.file_format or "").lower()
+    ext = os.path.splitext(ds.file.name or "")[1].lower()
+    if "geodatabase" in f:
+        return "gdb"
+    if ext in (".ppkx", ".mpkx", ".lpkx"):
+        return "package_pro"
+    if ext in (".mpk", ".lpk"):
+        return "package_arcmap"
+    if ext in (".qgz", ".qgs"):
+        return "qgis"
+    if "shapefile" in f:
+        return "shapefile"
+    if "esri grid" in f:
+        return "grid"
+    if f == "geojson":
+        return "geojson"
+    if f in ("geopackage", "spatialite"):
+        return "geopackage"
+    if f in ("kml", "kmz"):
+        return "kml"
+    if ds.data_type == Dataset.DataType.RASTER:
+        return "raster"
+    if ds.data_type == Dataset.DataType.TABLE:
+        return "table"
+    if ext == ".zip":
+        return "zip"
+    return "vector"
 
 
 # ---------------------------------------------------------------- public pages
@@ -107,8 +139,16 @@ def detail(request, slug):
     ds = get_object_or_404(Dataset.objects.select_related("organization", "category", "uploaded_by"), slug=slug)
     if not ds.can_be_viewed_by(request.user):
         raise Http404
+    direct_url = None
+    if ds.status == Dataset.Status.PUBLISHED and ds.access_level == Dataset.Access.PUBLIC:
+        if ds.file_format == "GeoJSON":
+            direct_url = request.build_absolute_uri(reverse("datasets:geojson", args=[ds.slug]))
+        elif ds.file_format == "GeoTIFF":
+            direct_url = request.build_absolute_uri(reverse("datasets:download", args=[ds.slug]))
     return render(request, "datasets/detail.html", {
         "ds": ds,
+        "kind": gis_kind(ds),
+        "direct_url": direct_url,
         "can_download": ds.can_be_downloaded_by(request.user),
         "can_edit": ds.can_be_edited_by(request.user),
         "review_form": ReviewForm() if request.user.is_authenticated and request.user.can_review
@@ -146,8 +186,8 @@ def dataset_geojson(request, slug):
     ds = get_object_or_404(Dataset, slug=slug)
     if not ds.can_be_viewed_by(request.user) or not ds.can_be_downloaded_by(request.user):
         raise Http404
-    if not ds.can_preview_on_map:
-        return JsonResponse({"error": "Preview not available for this dataset."}, status=415)
+    if ds.file_format != "GeoJSON":
+        return JsonResponse({"error": "Only GeoJSON datasets have a direct data link."}, status=415)
     return FileResponse(ds.file.open("rb"), content_type="application/geo+json")
 
 

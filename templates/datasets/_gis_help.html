@@ -1,0 +1,84 @@
+<div class="gis-help">
+  <h2><i class="bi bi-pc-display"></i> Use this data in GIS software</h2>
+  <p class="muted small">Download the file, then follow the steps for your software.{% if kind == "zip" or kind == "shapefile" or kind == "gdb" or kind == "grid" %} <strong>Unzip the download first</strong> (right-click → Extract All), except in QGIS, which can read the zip directly.{% endif %}</p>
+
+  {% if direct_url %}
+  <div class="direct-link">
+    <label for="direct-url"><i class="bi bi-link-45deg"></i> Direct data link (load without downloading)</label>
+    <div class="copy-row">
+      <input id="direct-url" type="text" readonly value="{{ direct_url }}" onclick="this.select()">
+      <button type="button" class="btn btn-navy" onclick="navigator.clipboard.writeText(document.getElementById('direct-url').value); this.textContent='Copied ✓'">Copy</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <details class="gis-tool" open>
+    <summary><span class="tool-badge tb-qgis">Q</span> QGIS</summary>
+    <ol>
+      {% if kind == "gdb" %}
+        <li>Menu <strong>Layer → Add Layer → Add Vector Layer</strong>.</li>
+        <li>Set <em>Source type</em> to <strong>Directory</strong>, and <em>Type</em> to <strong>OpenFileGDB</strong>.</li>
+        <li>Browse to the unzipped <code>.gdb</code> folder → <strong>Add</strong>, then choose the layers.</li>
+      {% elif kind == "package_pro" or kind == "package_arcmap" %}
+        <li>ArcGIS packages are designed for ArcGIS. In QGIS, rename the file to <code>.zip</code>, unzip it, and add the shapefiles or <code>.gdb</code> inside.</li>
+      {% elif kind == "qgis" %}
+        <li>Double-click the <code>{{ ds.file_format }}</code> file, or <strong>Project → Open</strong>.</li>
+      {% elif kind == "raster" or kind == "grid" %}
+        <li>Menu <strong>Layer → Add Layer → Add Raster Layer</strong>{% if direct_url %} (or choose <em>Protocol: HTTP(S)</em> and paste the direct link above){% endif %}.</li>
+        <li>Select the file → <strong>Add</strong>. Use <strong>Raster → Analysis</strong> and the <strong>Processing Toolbox</strong> for slope, hillshade, zonal statistics, etc.</li>
+      {% elif kind == "table" %}
+        <li>Menu <strong>Layer → Add Layer → Add Delimited Text Layer</strong> (CSV) or drag the Excel file into QGIS.</li>
+        <li>Choose the longitude (X) and latitude (Y) columns to display points.</li>
+      {% else %}
+        <li>Drag the downloaded file{% if kind == "shapefile" or kind == "zip" %} (the .zip works directly){% endif %} into the QGIS map window, or use <strong>Layer → Add Layer → Add Vector Layer</strong>.</li>
+        {% if direct_url %}<li>Or load it straight from the portal: <strong>Add Vector Layer → Source type: Protocol: HTTP(S)</strong>, paste the direct link above.</li>{% endif %}
+        <li>Analyse with the <strong>Processing Toolbox</strong> (Ctrl+Alt+T): buffer, clip, intersect, count points in polygon, etc.</li>
+      {% endif %}
+    </ol>
+  </details>
+
+  <details class="gis-tool">
+    <summary><span class="tool-badge tb-pro">Pro</span> ArcGIS Pro</summary>
+    <ol>
+      {% if kind == "package_pro" or kind == "package_arcmap" %}
+        <li>Double-click the downloaded <code>{{ ds.file_format }}</code> file. ArcGIS Pro opens it and adds the layers with their symbology.</li>
+      {% elif kind == "geojson" %}
+        <li>Open the <strong>Geoprocessing</strong> pane → search <strong>JSON To Features</strong>.</li>
+        <li>Input: the downloaded <code>.geojson</code>. Output: a feature class in your project geodatabase → <strong>Run</strong>.</li>
+      {% elif kind == "kml" %}
+        <li>Geoprocessing → <strong>KML To Layer</strong> → choose the file → <strong>Run</strong>.</li>
+      {% elif kind == "table" %}
+        <li>Add the table to the map (Map tab → <strong>Add Data</strong>), then right-click it → <strong>Display XY Data</strong>.</li>
+      {% elif kind == "qgis" %}
+        <li>QGIS projects can't be opened in ArcGIS Pro. Download the data layers listed in the description instead.</li>
+      {% else %}
+        <li>In the <strong>Catalog</strong> pane, right-click <em>Folders</em> → <strong>Add Folder Connection</strong> → choose the folder where you unzipped the data.</li>
+        <li>Expand the folder{% if kind == "gdb" %} and the <code>.gdb</code>{% endif %}, then drag the layer onto the map.</li>
+      {% endif %}
+      <li>Analyse with the <strong>Analysis</strong> tab → <strong>Tools</strong> (Buffer, Clip, Summarize Within, Spatial Analyst tools for rasters).</li>
+    </ol>
+  </details>
+
+  <details class="gis-tool">
+    <summary><span class="tool-badge tb-map">Map</span> ArcMap &amp; ArcCatalog (ArcGIS Desktop 10.x)</summary>
+    <ol>
+      {% if kind == "package_arcmap" %}
+        <li>Double-click the <code>.mpk</code> / <code>.lpk</code> file to open it in ArcMap.</li>
+      {% elif kind == "package_pro" %}
+        <li>ArcGIS Pro packages (<code>.mpkx</code>, <code>.ppkx</code>, <code>.lpkx</code>) <strong>don't open in ArcMap</strong>. Use ArcGIS Pro or QGIS.</li>
+      {% elif kind == "geojson" or kind == "geopackage" %}
+        <li>ArcMap doesn't read {{ ds.file_format }} directly. Open it in QGIS or ArcGIS Pro and export to a shapefile or File Geodatabase.</li>
+      {% elif kind == "kml" %}
+        <li>ArcToolbox → Conversion Tools → From KML → <strong>KML To Layer</strong>.</li>
+      {% elif kind == "qgis" %}
+        <li>QGIS projects can't be opened in ArcMap.</li>
+      {% else %}
+        <li>In <strong>ArcCatalog</strong>: click <strong>Connect to Folder</strong> and choose the unzipped folder. You can preview the data and its metadata there.</li>
+        <li>In <strong>ArcMap</strong>: drag the layer from ArcCatalog (or the Catalog window) onto the map, or use <strong>File → Add Data</strong>.</li>
+      {% endif %}
+      <li>Analyse with <strong>ArcToolbox</strong> (Analysis Tools, Spatial Analyst, Conversion Tools).</li>
+    </ol>
+  </details>
+
+  <p class="small muted"><i class="bi bi-info-circle"></i> Coordinate system: <strong>{{ ds.crs }}</strong>. If layers don't line up, set your map to the same coordinate system or reproject the data.</p>
+</div>

@@ -134,14 +134,14 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Public media (thumbnails, organization logos)
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = Path(env("MEDIA_ROOT", BASE_DIR / "media"))
 
 # Dataset files are kept OUTSIDE the public media folder. They are only
 # served through the download view, which checks status and access level.
 PRIVATE_MEDIA_ROOT = Path(env("PRIVATE_MEDIA_ROOT", BASE_DIR / "private_media"))
 
 # Upload limits
-MAX_UPLOAD_MB = int(env("MAX_UPLOAD_MB", 500))
+MAX_UPLOAD_MB = int(env("MAX_UPLOAD_MB", 2048))
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 MAX_MAP_PREVIEW_MB = 15  # GeoJSON larger than this is not drawn in the browser

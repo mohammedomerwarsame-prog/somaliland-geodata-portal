@@ -51,6 +51,7 @@ class Dataset(models.Model):
         VECTOR = "vector", "Vector"
         RASTER = "raster", "Raster"
         TABLE = "table", "Table"
+        OTHER = "other", "Package / project"
 
     class Status(models.TextChoices):
         PENDING = "pending", "Pending review"
@@ -86,7 +87,7 @@ class Dataset(models.Model):
 
     # File + technical metadata
     file = models.FileField(upload_to=dataset_upload_path, storage=private_storage, max_length=300)
-    file_format = models.CharField(max_length=30, blank=True)
+    file_format = models.CharField(max_length=60, blank=True)
     file_size = models.BigIntegerField(default=0)
     data_type = models.CharField(max_length=10, choices=DataType.choices, default=DataType.VECTOR)
     crs = models.CharField("Coordinate system", max_length=120, default="EPSG:4326")

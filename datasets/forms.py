@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 
-from .inspect import allowed_extensions_text, inspect_upload
+from .inspect import accept_attribute, allowed_extensions_text, inspect_upload
 from .models import Category, Dataset
 
 
@@ -19,11 +19,12 @@ class DatasetForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"rows": 5}),
             "disclaimer": forms.Textarea(attrs={"rows": 2}),
             "data_date": forms.DateInput(attrs={"type": "date"}),
-            "file": forms.ClearableFileInput(attrs={"accept": ".zip,.geojson,.json,.gpkg,.kml,.kmz,.tif,.tiff,.csv"}),
+            "file": forms.ClearableFileInput(attrs={"accept": accept_attribute()}),
             "thumbnail": forms.ClearableFileInput(attrs={"accept": "image/*"}),
         }
         help_texts = {
-            "file": f"Allowed: {allowed_extensions_text()}. Shapefiles must be zipped (.shp, .shx, .dbf, .prj).",
+            "file": "Any common GIS format: shapefile, File Geodatabase, GeoPackage, GeoTIFF, ArcGIS/QGIS packages and more. "
+                    "Zip folders first (shapefile parts, .gdb folders, ESRI Grids).",
             "thumbnail": "Optional preview image (PNG/JPG) shown in the catalog.",
             "organization": "The institution that produced the data (shown as publisher). "
                             "Add new institutions in Admin → Government institutions.",

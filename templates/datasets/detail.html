@@ -25,6 +25,8 @@
     <h2>Description</h2>
     {% if ds.description %}{{ ds.description|linebreaks }}{% else %}<p class="muted">No detailed description provided.</p>{% endif %}
 
+    {% include "datasets/_gis_help.html" %}
+
     <h2>Metadata</h2>
     <table class="meta-table">
       <tr><th>Publisher</th><td>{{ ds.organization.name }}</td></tr>
