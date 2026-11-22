@@ -1,0 +1,21 @@
+{
+  "name": "Somaliland GeoData Portal",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "containerEnv": {
+    "DJANGO_DEBUG": "True",
+    "DJANGO_ALLOWED_HOSTS": "localhost,127.0.0.1,.app.github.dev",
+    "DJANGO_CSRF_TRUSTED_ORIGINS": "https://*.app.github.dev",
+    "DJANGO_SUPERUSER_USERNAME": "admin",
+    "DJANGO_SUPERUSER_EMAIL": "admin@example.org",
+    "DJANGO_SUPERUSER_PASSWORD": "ChangeMe-2026!"
+  },
+  "postCreateCommand": "pip install -r requirements.txt && python manage.py makemigrations organizations accounts datasets && python manage.py migrate && python manage.py seed_portal --demo && (python manage.py createsuperuser --noinput || true)",
+  "postAttachCommand": "python manage.py runserver 0.0.0.0:8000",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": { "label": "GeoData Portal", "onAutoForward": "openBrowser" }
+  },
+  "customizations": {
+    "vscode": { "extensions": ["ms-python.python", "batisteo.vscode-django"] }
+  }
+}

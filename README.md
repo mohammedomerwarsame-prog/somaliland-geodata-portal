@@ -32,6 +32,14 @@ Specialist uploads ──► PENDING ──► Reviewer approves ──► PUBLI
 
 Dataset files are stored in `private_media/`, **outside** the public media folder. Downloads always go through the portal. It checks status and access level, and counts every download (see `DownloadLog` in the admin).
 
+## Run it in your browser (no installation)
+
+1. On the GitHub page, click **Code → Codespaces → Create codespace on main**.
+2. Wait 2–3 minutes while it installs and sets up the demo data.
+3. The portal opens in a new tab. If it doesn't, open the **Ports** tab and click the globe icon next to port 8000.
+
+Logins (password `ChangeMe-2026!`): `admin` (administrator, use `/admin/`), `specialist`, `reviewer`, `citizen`.
+
 ## Quick start (development)
 
 ```bash
